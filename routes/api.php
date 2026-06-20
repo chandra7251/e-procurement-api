@@ -18,7 +18,7 @@ Route::post('auth/register', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 201);
 });
 
 Route::post('auth/login', function () {
@@ -39,7 +39,7 @@ Route::post('auth/login', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::post('auth/logout', function () {
@@ -50,7 +50,7 @@ Route::post('auth/logout', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('auth/me', function () {
@@ -68,7 +68,7 @@ Route::get('auth/me', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::put('auth/change-password', function () {
@@ -79,7 +79,7 @@ Route::put('auth/change-password', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('vendors/me', function () {
@@ -99,7 +99,7 @@ Route::get('vendors/me', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::put('vendors/me', function () {
@@ -115,7 +115,7 @@ Route::put('vendors/me', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('vendors/status', function () {
@@ -130,7 +130,7 @@ Route::get('vendors/status', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('vendors/documents', function () {
@@ -157,7 +157,7 @@ Route::get('vendors/documents', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::post('vendors/documents', function () {
@@ -175,7 +175,7 @@ Route::post('vendors/documents', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 201);
 });
 
 Route::get('admin/vendors', function () {
@@ -207,7 +207,7 @@ Route::get('admin/vendors', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('admin/vendors/{id}', function () {
@@ -244,7 +244,7 @@ Route::get('admin/vendors/{id}', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::patch('admin/vendors/{id}/status', function () {
@@ -260,7 +260,7 @@ Route::patch('admin/vendors/{id}/status', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('admin/tenders', function () {
@@ -296,7 +296,7 @@ Route::get('admin/tenders', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::post('admin/tenders', function () {
@@ -316,7 +316,7 @@ Route::post('admin/tenders', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 201);
 });
 
 Route::get('admin/tenders/{id}', function () {
@@ -339,7 +339,7 @@ Route::get('admin/tenders/{id}', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::put('admin/tenders/{id}', function () {
@@ -355,7 +355,7 @@ Route::put('admin/tenders/{id}', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::patch('admin/tenders/{id}/status', function () {
@@ -370,7 +370,7 @@ Route::patch('admin/tenders/{id}/status', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('tenders', function () {
@@ -408,7 +408,7 @@ Route::get('tenders', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('tenders/{id}', function () {
@@ -431,7 +431,7 @@ Route::get('tenders/{id}', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::post('tenders/{id}/participants', function () {
@@ -447,7 +447,7 @@ Route::post('tenders/{id}/participants', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 201);
 });
 
 Route::get('admin/tenders/{id}/participants', function () {
@@ -470,7 +470,7 @@ Route::get('admin/tenders/{id}/participants', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::post('admin/tenders/{id}/announcements', function () {
@@ -488,7 +488,7 @@ Route::post('admin/tenders/{id}/announcements', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 201);
 });
 
 Route::get('tenders/{id}/announcements', function () {
@@ -513,7 +513,7 @@ Route::get('tenders/{id}/announcements', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::post('tenders/{id}/bids', function () {
@@ -532,7 +532,7 @@ Route::post('tenders/{id}/bids', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 201);
 });
 
 Route::put('tenders/{id}/bids/{bidId}', function () {
@@ -551,7 +551,7 @@ Route::put('tenders/{id}/bids/{bidId}', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('tenders/{id}/bids/me', function () {
@@ -571,7 +571,7 @@ Route::get('tenders/{id}/bids/me', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('admin/tenders/{id}/bids', function () {
@@ -600,7 +600,7 @@ Route::get('admin/tenders/{id}/bids', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::post('admin/tenders/{id}/winner', function () {
@@ -619,7 +619,7 @@ Route::post('admin/tenders/{id}/winner', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('tenders/{id}/winner', function () {
@@ -640,7 +640,7 @@ Route::get('tenders/{id}/winner', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('tenders/{id}/result', function () {
@@ -665,7 +665,7 @@ Route::get('tenders/{id}/result', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::post('admin/tenders/{id}/purchase-order', function () {
@@ -687,7 +687,7 @@ Route::post('admin/tenders/{id}/purchase-order', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 201);
 });
 
 Route::get('admin/tenders/{id}/purchase-order', function () {
@@ -710,7 +710,7 @@ Route::get('admin/tenders/{id}/purchase-order', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
 Route::get('admin/dashboard', function () {
@@ -733,6 +733,6 @@ Route::get('admin/dashboard', function () {
 }
 JSON
 , true);
-    return response()->json($data);
+    return response()->json($data, 200);
 });
 
