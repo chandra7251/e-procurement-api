@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
+// register & login
 Route::post('auth/register', function () {
     $data = json_decode(<<<'JSON'
 {
@@ -82,6 +84,7 @@ JSON
     return response()->json($data, 200);
 });
 
+// buat ngatur profile vendor
 Route::get('vendors/me', function () {
     $data = json_decode(<<<'JSON'
 {
@@ -178,6 +181,7 @@ JSON
     return response()->json($data, 201);
 });
 
+// endpoint khusus admin doang
 Route::get('admin/vendors', function () {
     $data = json_decode(<<<'JSON'
 {
@@ -373,6 +377,7 @@ JSON
     return response()->json($data, 200);
 });
 
+// nampilin tender ke publik & vendor
 Route::get('tenders', function () {
     $data = json_decode(<<<'JSON'
 {
