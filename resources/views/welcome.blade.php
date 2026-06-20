@@ -8,10 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
-        .method-badge { width: 52px; text-align: center; display: inline-block; }
-        .scrollbar-thin::-webkit-scrollbar { width: 6px; }
-        .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-        .scrollbar-thin::-webkit-scrollbar-thumb { background-color: #e2e8f0; border-radius: 20px; }
+        .method-badge { width: 52px; text-align: center; display: inline-block; flex-shrink: 0; }
     </style>
 </head>
 <body class="min-h-screen text-slate-800 py-12 px-4 sm:px-6">
@@ -83,25 +80,31 @@
                 <div class="space-y-10">
                     <!-- Auth -->
                     <div>
-                        <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4">Authentication</h4>
+                        <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4 flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-slate-300" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
+                            Authentication
+                        </h4>
                         <ul class="space-y-2.5">
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/auth/register</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/auth/login</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/auth/logout</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/auth/me</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-amber-700 bg-amber-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">PUT</span><span class="text-slate-600 font-medium">/api/auth/change-password</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium break-all">/api/auth/register</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium break-all">/api/auth/login</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium break-all">/api/auth/logout</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/auth/me</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-amber-700 bg-amber-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">PUT</span><span class="text-slate-600 font-medium break-all">/api/auth/change-password</span></li>
                         </ul>
                     </div>
 
                     <!-- Vendor -->
                     <div>
-                        <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4">Vendor Profile & Docs</h4>
+                        <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4 flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-slate-300" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
+                            Vendor Profile & Docs
+                        </h4>
                         <ul class="space-y-2.5">
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/vendors/me</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-amber-700 bg-amber-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">PUT</span><span class="text-slate-600 font-medium">/api/vendors/me</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/vendors/status</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/vendors/documents</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/vendors/documents</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/vendors/me</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-amber-700 bg-amber-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">PUT</span><span class="text-slate-600 font-medium break-all">/api/vendors/me</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/vendors/status</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/vendors/documents</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium break-all">/api/vendors/documents</span></li>
                         </ul>
                     </div>
                 </div>
@@ -110,44 +113,81 @@
                 <div class="space-y-10">
                     <!-- Tenders Public -->
                     <div>
-                        <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4">Tenders & Bidding</h4>
+                        <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4 flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-slate-300" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
+                            Tenders & Bidding
+                        </h4>
                         <ul class="space-y-2.5">
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/tenders</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/tenders/{id}</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/tenders/{id}/participants</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/tenders/{id}/bids</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-amber-700 bg-amber-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">PUT</span><span class="text-slate-600 font-medium">/api/tenders/{id}/bids/{bidId}</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/tenders/{id}/bids/me</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/tenders/{id}/winner</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/tenders/{id}/result</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/tenders/{id}/announcements</span></li>
-                        </ul>
-                    </div>
-
-                    <!-- Admin -->
-                    <div>
-                        <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4">Admin Panel</h4>
-                        <ul class="space-y-2.5 max-h-[380px] overflow-y-auto pr-3 scrollbar-thin">
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/admin/dashboard</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/admin/vendors</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/admin/vendors/{id}</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-purple-700 bg-purple-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">PATCH</span><span class="text-slate-600 font-medium">/api/admin/vendors/{id}/status</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/admin/tenders</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/admin/tenders</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/admin/tenders/{id}</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-amber-700 bg-amber-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">PUT</span><span class="text-slate-600 font-medium">/api/admin/tenders/{id}</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-purple-700 bg-purple-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">PATCH</span><span class="text-slate-600 font-medium">/api/admin/tenders/{id}/status</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/admin/tenders/{id}/participants</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/admin/tenders/{id}/announc..</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/admin/tenders/{id}/bids</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/admin/tenders/{id}/winner</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium">/api/admin/tenders/{id}/po</span></li>
-                            <li class="flex items-center text-sm font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium">/api/admin/tenders/{id}/po</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/tenders</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/tenders/{id}</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium break-all">/api/tenders/{id}/participants</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">POST</span><span class="text-slate-600 font-medium break-all">/api/tenders/{id}/bids</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-amber-700 bg-amber-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">PUT</span><span class="text-slate-600 font-medium break-all">/api/tenders/{id}/bids/{bidId}</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/tenders/{id}/bids/me</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/tenders/{id}/winner</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/tenders/{id}/result</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-4">GET</span><span class="text-slate-600 font-medium break-all">/api/tenders/{id}/announcements</span></li>
                         </ul>
                     </div>
                 </div>
 
             </div>
+
+            <!-- Admin Section Separated & Foldered -->
+            <div class="mt-12 pt-10 border-t border-slate-100">
+                <div class="flex items-center mb-8">
+                    <span class="bg-indigo-600 text-white text-[10px] px-2 py-1 rounded uppercase tracking-widest font-bold mr-3 shadow-sm">ADMIN ONLY</span>
+                    <h4 class="text-lg font-extrabold text-slate-800 tracking-tight">Admin Management Panel</h4>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Folder 1: Dashboard & Vendor -->
+                    <div class="space-y-4">
+                        <h5 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
+                            Vendors & Dashboard
+                        </h5>
+                        <ul class="space-y-2.5">
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">GET</span><span class="text-slate-600 font-medium break-all">/api/admin/dashboard</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">GET</span><span class="text-slate-600 font-medium break-all">/api/admin/vendors</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">GET</span><span class="text-slate-600 font-medium break-all">/api/admin/vendors/{id}</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-purple-700 bg-purple-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">PATCH</span><span class="text-slate-600 font-medium break-all">/api/admin/vendors/{id}/status</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Folder 2: Tenders Master -->
+                    <div class="space-y-4">
+                        <h5 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
+                            Tenders Management
+                        </h5>
+                        <ul class="space-y-2.5">
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">GET</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">POST</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">GET</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders/{id}</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-amber-700 bg-amber-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">PUT</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders/{id}</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-purple-700 bg-purple-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">PATCH</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders/{id}/status</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Folder 3: Bidding & PO -->
+                    <div class="space-y-4">
+                        <h5 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
+                            Bidding, Winner & PO
+                        </h5>
+                        <ul class="space-y-2.5">
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">GET</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders/{id}/participants</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">GET</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders/{id}/bids</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">POST</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders/{id}/winner</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">POST</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders/{id}/announcements</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-blue-700 bg-blue-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">GET</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders/{id}/purchase-order</span></li>
+                            <li class="flex items-center text-xs font-mono bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-100 transition-colors"><span class="method-badge text-emerald-700 bg-emerald-100/60 rounded-md px-1.5 py-1 text-[11px] font-bold mr-3">POST</span><span class="text-slate-600 font-medium break-all">/api/admin/tenders/{id}/purchase-order</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="text-center text-sm text-slate-400 pb-8 mt-12">
