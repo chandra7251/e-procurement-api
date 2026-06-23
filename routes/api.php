@@ -1,6 +1,5 @@
 <?php
-
-use Illuminate\Http\Request;
+ 
 use Illuminate\Support\Facades\Route;
 
 
@@ -146,14 +145,14 @@ Route::get('vendors/documents', function () {
             "id": 1,
             "document_type": "legalitas",
             "file_name": "legalitas-pt-maju-jaya.pdf",
-            "file_url": "http://127.0.0.1:8080/storage/vendor-documents/legalitas-pt-maju-jaya.pdf",
+            "file_url": "https://api.vandrafcy.my.id/storage/vendor-documents/legalitas-pt-maju-jaya.pdf",
             "uploaded_at": "2026-05-01 10:00:00"
         },
         {
             "id": 2,
             "document_type": "izin_usaha",
             "file_name": "izin-usaha-pt-maju-jaya.pdf",
-            "file_url": "http://127.0.0.1:8080/storage/vendor-documents/izin-usaha-pt-maju-jaya.pdf",
+            "file_url": "https://api.vandrafcy.my.id/storage/vendor-documents/izin-usaha-pt-maju-jaya.pdf",
             "uploaded_at": "2026-05-01 10:10:00"
         }
     ]
@@ -172,7 +171,7 @@ Route::post('vendors/documents', function () {
         "id": 3,
         "document_type": "izin_usaha",
         "file_name": "izin-usaha-baru.pdf",
-        "file_url": "http://127.0.0.1:8080/storage/vendor-documents/izin-usaha-baru.pdf",
+        "file_url": "https://api.vandrafcy.my.id/storage/vendor-documents/izin-usaha-baru.pdf",
         "uploaded_at": "2026-05-01 10:30:00"
     }
 }
@@ -233,14 +232,14 @@ Route::get('admin/vendors/{id}', function () {
                 "id": 11,
                 "document_type": "legalitas",
                 "file_name": "legalitas-pt-maju-jaya.pdf",
-                "file_url": "http://127.0.0.1:8080/storage/vendor-documents/legalitas-pt-maju-jaya.pdf",
+                "file_url": "https://api.vandrafcy.my.id/storage/vendor-documents/legalitas-pt-maju-jaya.pdf",
                 "uploaded_at": "2026-05-01 10:00:00"
             },
             {
                 "id": 12,
                 "document_type": "izin_usaha",
                 "file_name": "izin-usaha-pt-maju-jaya.pdf",
-                "file_url": "http://127.0.0.1:8080/storage/vendor-documents/izin-usaha-pt-maju-jaya.pdf",
+                "file_url": "https://api.vandrafcy.my.id/storage/vendor-documents/izin-usaha-pt-maju-jaya.pdf",
                 "uploaded_at": "2026-05-01 10:10:00"
             }
         ]
@@ -740,4 +739,3 @@ JSON
 , true);
     return response()->json($data, 200);
 });
-
