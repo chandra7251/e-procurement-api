@@ -2,677 +2,1053 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>E-Procurement Tender & Bidding System API</title>
+    <title>API Tester — E-Procurement System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive API tester for E-Procurement Tender & Bidding System.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
-        * { box-sizing: border-box; }
+        /* Modern CSS Reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            /* Color Palette (Modern SaaS Light Theme) */
+            --bg-body: #F3F4F6;
+            --bg-card: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --text-light: #9CA3AF;
+            --border: #E5E7EB;
+            
+            --primary: #4F46E5;     /* Indigo 600 */
+            --primary-hover: #4338CA;
+            --primary-light: #EEF2FF;
+            --primary-text: #3730A3;
+
+            --success: #10B981;     /* Emerald 500 */
+            --success-light: #D1FAE5;
+            --success-text: #065F46;
+
+            --danger: #EF4444;      /* Red 500 */
+            --danger-light: #FEE2E2;
+            --danger-text: #991B1B;
+
+            --warning: #F59E0B;     /* Amber 500 */
+            --warning-light: #FEF3C7;
+            --warning-text: #92400E;
+
+            --info: #3B82F6;        /* Blue 500 */
+            --info-light: #DBEAFE;
+            --info-text: #1E40AF;
+
+            /* Typography */
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Shadows & Radii */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+        }
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f6f8;
-            color: #111827;
+            font-family: var(--font-sans);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* --- Header --- */
         header {
-            background: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 28px 20px;
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
-        .header-wrap { max-width: 1100px; margin: 0 auto; }
-        h1 { margin: 0 0 8px; font-size: 26px; }
-        .subtitle { margin: 0; color: #6b7280; font-size: 14px; }
-
-        .container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
-
-        .box {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 18px;
-            margin-bottom: 18px;
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .box-title { margin: 0 0 14px; font-size: 18px; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-        .info-grid {
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), #818CF8);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .brand-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .brand-text p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* --- Layout --- */
+        .main-container {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 24px;
             display: grid;
-            grid-template-columns: 160px 1fr;
-            gap: 8px 14px;
+            grid-template-columns: 400px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 968px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- Cards --- */
+        .card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 24px;
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background-color: #F9FAFB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
             font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .info-label { color: #6b7280; }
-        .info-value { color: #111827; font-family: Consolas, monospace; word-break: break-all; }
-
-        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
-
-        .summary-item {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            background: #fafafa;
-            padding: 12px;
+        .card-title-icon {
+            color: var(--text-light);
         }
 
-        .summary-item strong { display: block; margin-bottom: 5px; }
-        .summary-item span { font-size: 13px; color: #6b7280; line-height: 1.5; }
+        .card-body {
+            padding: 20px;
+        }
 
-        .tester-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        /* --- Form Elements --- */
+        .form-group {
+            margin-bottom: 16px;
+        }
 
-        .field { margin-bottom: 14px; }
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
 
-        label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: bold; color: #374151; }
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
 
-        input, select, textarea {
+        .form-control {
             width: 100%;
-            border: 1px solid #d1d5db;
-            background: #ffffff;
-            color: #111827;
-            border-radius: 8px;
-            padding: 10px 11px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
             font-size: 14px;
+            color: var(--text-main);
+            background-color: #FFFFFF;
+            transition: all 0.2s;
         }
 
-        input:focus, select:focus, textarea:focus { outline: none; border-color: #4b5563; }
-        input[readonly] { background: #f9fafb; color: #4b5563; }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
 
-        textarea {
-            min-height: 220px;
+        .form-control:disabled, .form-control[readonly] {
+            background-color: #F3F4F6;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 36px;
+        }
+
+        textarea.form-control {
+            font-family: var(--font-mono);
+            font-size: 13px;
             resize: vertical;
-            font-family: Consolas, monospace;
+            min-height: 120px;
             line-height: 1.5;
         }
 
-        .row-2 { display: grid; grid-template-columns: 120px 1fr; gap: 10px; }
-
-        .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-
-        button {
-            border: none;
-            border-radius: 8px;
-            padding: 10px 14px;
-            background: #374151;
-            color: #ffffff;
-            font-weight: bold;
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            font-family: var(--font-sans);
         }
 
-        button:hover { background: #111827; }
-        .btn-light { background: #e5e7eb; color: #111827; }
-        .btn-light:hover { background: #d1d5db; }
-        .btn-danger { background: #b91c1c; }
-        .btn-danger:hover { background: #991b1b; }
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
 
-        .note { margin-top: 7px; font-size: 13px; color: #6b7280; line-height: 1.5; }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
 
-        .response-header {
+        .btn-secondary {
+            background-color: #FFFFFF;
+            color: var(--text-main);
+            border-color: var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            background-color: #F9FAFB;
+        }
+
+        .btn-danger-outline {
+            background-color: transparent;
+            color: var(--danger);
+            border-color: var(--danger-light);
+        }
+
+        .btn-danger-outline:hover {
+            background-color: var(--danger-light);
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* --- Specific UI Components --- */
+        .method-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .method-GET { background-color: var(--info-light); color: var(--info-text); }
+        .method-POST { background-color: var(--success-light); color: var(--success-text); }
+        .method-PUT { background-color: var(--warning-light); color: var(--warning-text); }
+        .method-PATCH { background-color: #FCE7F3; color: #9D174D; } /* Pink */
+        .method-DELETE { background-color: var(--danger-light); color: var(--danger-text); }
+        
+        .endpoint-display {
             display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 12px;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background-color: #F9FAFB;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+        }
+
+        .endpoint-url {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-main);
+            word-break: break-all;
+        }
+
+        .access-hint {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .access-hint-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .hint-admin { background-color: var(--info-light); color: var(--info-text); }
+        .hint-vendor { background-color: var(--success-light); color: var(--success-text); }
+        .hint-public { background-color: #F3F4F6; color: var(--text-muted); }
+
+        /* --- Response Area --- */
+        .response-container {
+            position: relative;
+        }
+
+        .response-status-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 12px;
         }
 
-        .response-header code { font-family: Consolas, monospace; color: #111827; }
-        .status { font-weight: bold; color: #374151; }
-
-        pre {
-            margin: 0;
-            min-height: 240px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-break: break-word;
-            font-family: Consolas, monospace;
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
             font-size: 13px;
-            line-height: 1.5;
-            color: #111827;
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 14px;
+            font-weight: 600;
         }
 
-        footer { text-align: center; color: #6b7280; font-size: 13px; padding: 24px 12px; }
-
-        @media (max-width: 800px) {
-            .tester-grid, .row-2, .info-grid { grid-template-columns: 1fr; }
+        .status-badge::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
         }
+
+        .status-idle { background-color: #F3F4F6; color: var(--text-muted); }
+        .status-idle::before { background-color: var(--text-light); }
+
+        .status-success { background-color: var(--success-light); color: var(--success-text); }
+        .status-success::before { background-color: var(--success); }
+
+        .status-error { background-color: var(--danger-light); color: var(--danger-text); }
+        .status-error::before { background-color: var(--danger); }
+
+        .status-warning { background-color: var(--warning-light); color: var(--warning-text); }
+        .status-warning::before { background-color: var(--warning); }
+
+        .time-badge {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .code-block-wrapper {
+            position: relative;
+            background-color: #1F2937; /* Gray 800 */
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .code-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #111827; /* Gray 900 */
+            border-bottom: 1px solid #374151;
+        }
+
+        .code-block-title {
+            color: #9CA3AF;
+            font-size: 12px;
+            font-family: var(--font-mono);
+        }
+
+        pre#responseBox {
+            margin: 0;
+            padding: 16px;
+            color: #E5E7EB;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* --- History --- */
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .history-item:hover {
+            background-color: #F3F4F6;
+        }
+
+        .history-item:not(:last-child) {
+            border-bottom: 1px solid var(--border);
+            border-radius: 0;
+        }
+
+        .history-main {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+        }
+        
+        .history-path {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-status {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* --- Utilities --- */
+        .flex-row { display: flex; gap: 12px; align-items: center; }
+        .mt-4 { margin-top: 16px; }
+        .mb-4 { margin-bottom: 16px; }
+        .text-mono { font-family: var(--font-mono); }
     </style>
 </head>
-
 <body>
+
+<!-- Header -->
 <header>
-    <div class="header-wrap">
-        <h1>E-Procurement Tender & Bidding System API</h1>
-        <p class="subtitle">API tester sederhana untuk pengujian endpoint Laravel.</p>
+    <div class="header-container">
+        <div class="brand">
+            <div class="brand-text">
+                <h1>API Tester</h1>
+                <p>E-Procurement Tender & Bidding System</p>
+            </div>
+        </div>
     </div>
 </header>
 
-<div class="container">
-    <section class="box">
-        <h2 class="box-title">Informasi API</h2>
-        <div class="info-grid">
-            <div class="info-label">Base URL</div>
-            <div class="info-value">https://api.vandrafcy.my.id</div>
-
-            <div class="info-label">Dokumentasi</div>
-            <div class="info-value">https://llmwulg77h.apidog.io/</div>
-
-            <div class="info-label">Repository</div>
-            <div class="info-value">https://github.com/chandra7251/e-procurement-api</div>
-
-            <div class="info-label">Format response</div>
-            <div class="info-value">application/json</div>
-        </div>
-    </section>
-
-    <section class="box">
-        <h2 class="box-title">Ringkasan Modul</h2>
-        <div class="summary-grid">
-            <div class="summary-item">
-                <strong>Auth</strong>
-                <span>Register, login, logout, current user, change password</span>
+<div class="main-container">
+    <!-- Left Column: Controls -->
+    <div class="controls-column">
+        
+        <!-- Auth Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Authentication</div>
             </div>
-            <div class="summary-item">
-                <strong>Vendor</strong>
-                <span>Profile, status verifikasi, dokumen vendor</span>
-            </div>
-            <div class="summary-item">
-                <strong>Admin Vendor</strong>
-                <span>List vendor, detail vendor, verifikasi vendor</span>
-            </div>
-            <div class="summary-item">
-                <strong>Tender</strong>
-                <span>Kelola tender admin dan akses tender vendor</span>
-            </div>
-            <div class="summary-item">
-                <strong>Bidding</strong>
-                <span>Join tender, aanwijzing, submit bid, update bid</span>
-            </div>
-            <div class="summary-item">
-                <strong>Result & PO</strong>
-                <span>Pemenang, hasil tender, purchase order, dashboard</span>
-            </div>
-        </div>
-    </section>
-
-    <section class="box">
-        <h2 class="box-title">API Tester</h2>
-        <div class="tester-grid">
-            <div>
-                <div class="field">
-                    <label for="roleInput">Role</label>
-                    <select id="roleInput">
-                        <option value="vendor">vendor</option>
-                        <option value="admin">admin</option>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label" for="roleInput">Login As</label>
+                    <select class="form-control" id="roleInput">
+                        <option value="vendor">Vendor</option>
+                        <option value="admin">Admin</option>
                     </select>
-                    <div class="note">Vendor untuk endpoint vendor. Admin untuk endpoint /api/admin.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="tokenInput">Access Token</label>
+                    <input type="text" class="form-control text-mono" id="tokenInput" placeholder="Login untuk mendapatkan token">
                 </div>
 
-                <div class="field">
-                    <label for="tokenInput">Bearer Token</label>
-                    <input type="text" id="tokenInput" placeholder="Token akses">
-                    <div class="button-row">
-                        <button type="button" id="btnLogin" onclick="doLogin()">Login</button>
-                        <button type="button" class="btn-light" onclick="saveToken()">Simpan Token</button>
-                        <button type="button" class="btn-danger" onclick="resetAll()">Reset</button>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label for="endpointInput">Endpoint</label>
-                    <select id="endpointInput"></select>
-                </div>
-
-                <div class="row-2">
-                    <div class="field">
-                        <label for="methodInput">Method</label>
-                        <input type="text" id="methodInput" readonly>
-                    </div>
-                    <div class="field">
-                        <label for="accessInput">Akses</label>
-                        <input type="text" id="accessInput" readonly>
-                    </div>
-                </div>
-
-                <div class="button-row">
-                    <button type="button" onclick="sendRequest()">Send Request</button>
-                    <button type="button" class="btn-light" onclick="resetBody()">Reset Body</button>
-                    <button type="button" class="btn-light" onclick="clearResponse()">Clear Response</button>
-                </div>
-            </div>
-
-            <div>
-                <div class="field">
-                    <label for="bodyInput">Request Body</label>
-                    <textarea id="bodyInput" spellcheck="false"></textarea>
-                    <div class="note" id="bodyNote">Pilih endpoint untuk melihat request body.</div>
+                <div class="flex-row mt-4">
+                    <button class="btn btn-primary" onclick="doLogin()" style="flex: 1;">Login</button>
+                    <button class="btn btn-secondary btn-sm" onclick="resetAll()">Reset</button>
                 </div>
             </div>
         </div>
-    </section>
 
-    <section class="box" id="responsePanel">
-        <div class="response-header">
-            <div>
-                <strong>Response</strong><br>
-                <code id="currentEndpoint">Belum ada request</code>
+        <!-- Endpoint Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Endpoint Configuration</div>
             </div>
-            <div class="status" id="statusText">Idle</div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label" for="endpointInput">Select Endpoint</label>
+                    <select class="form-control" id="endpointInput"></select>
+                </div>
+
+                <div id="accessHint" class="access-hint hint-public" style="display: none;">
+                    <span id="accessHintText">Requires authentication.</span>
+                </div>
+
+                <!-- History included in the left column to save space -->
+                <div class="mt-4" style="border-top: 1px solid var(--border); padding-top: 16px;">
+                    <label class="form-label">Recent Requests</label>
+                    <div id="historyList" style="border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden;">
+                        <div class="empty-state">Belum ada request</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <pre id="responseBox">Pilih endpoint lalu klik Send Request.</pre>
-    </section>
+
+    </div>
+
+    <!-- Right Column: Request & Response -->
+    <div class="workspace-column">
+        
+        <div class="card">
+            <div class="card-header" style="background-color: white;">
+                <!-- Live Endpoint Display -->
+                <div class="endpoint-display" style="margin-bottom: 0; width: 100%; border: none; padding: 0; background: transparent;">
+                    <span class="method-badge" id="urlMethod">GET</span>
+                    <span class="endpoint-url" id="urlPath">/api/...</span>
+                    <div style="flex: 1;"></div>
+                    <button class="btn btn-primary" onclick="sendRequest()" id="btnSend">
+                        Send Request
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-body" style="background-color: #F9FAFB; border-bottom: 1px solid var(--border);">
+                <label class="form-label">Request Body (JSON)</label>
+                <textarea class="form-control" id="bodyInput" spellcheck="false" placeholder="Select an endpoint..."></textarea>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;" id="bodyNote">
+                    No body required for this request.
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="response-status-bar">
+                    <div class="status-badge status-idle" id="statusBadge">Waiting</div>
+                    <div class="time-badge" id="responseTime"></div>
+                </div>
+
+                <div class="code-block-wrapper">
+                    <div class="code-block-header">
+                        <span class="code-block-title">Response</span>
+                        <button class="btn btn-secondary btn-sm" id="btnCopy" onclick="copyResponse()" style="background-color: transparent; color: #9CA3AF; border-color: #374151; display: none;">Copy</button>
+                    </div>
+                    <pre id="responseBox">Select an endpoint and click "Send Request" to view the response here.</pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-<footer>E-Procurement Tender & Bidding System API</footer>
-
 <script>
-    // ── Konfigurasi Token Demo ────────────────────────────────────────────────
-    const DEMO_TOKENS = {
-        vendor: '1|sample_vendor_token_abc123xyz',
-        admin:  '2|sample_admin_token_abc123xyz'
-    };
+// --- Configuration & Data ---
+const BASE_URL = 'https://api.vandrafcy.my.id';
 
-    // ── Request Bodies ────────────────────────────────────────────────────────
-    const BODIES = {
-        register: {
-            name: 'Budi Santoso', email: 'vendor@mail.com',
-            password: 'password123', password_confirmation: 'password123',
-            company_name: 'PT Maju Jaya', phone: '08123456789', address: 'Jakarta'
-        },
-        loginVendor: { email: 'vendor@mail.com', password: 'password123' },
-        loginAdmin:  { email: 'admin@mail.com',  password: 'password123' },
-        changePassword: {
-            current_password: 'password123',
-            new_password: 'passwordBaru123',
-            new_password_confirmation: 'passwordBaru123'
-        },
-        updateVendor: {
-            company_name: 'PT Maju Jaya Sejahtera',
-            phone: '08123456789', address: 'Jl. Sudirman No. 10, Jakarta'
-        },
-        vendorStatus: { status: 'approved', notes: 'Dokumen lengkap dan valid' },
-        createTender: {
-            title: 'Pengadaan Laptop Kantor 2026',
-            description: 'Tender pengadaan laptop untuk kebutuhan operasional kantor pusat.',
-            specification: 'Processor minimal Intel Core i5, RAM 16GB, SSD 512GB, garansi resmi 2 tahun.',
-            start_date: '2026-05-10 08:00:00', end_date: '2026-05-20 17:00:00',
-            aanwijzing_date: '2026-05-12 10:00:00',
-            bidding_start: '2026-05-13 08:00:00', bidding_end: '2026-05-15 23:59:59',
-            status: 'draft'
-        },
-        updateTender: {
-            title: 'Pengadaan Laptop Kantor 2026 - Revisi',
-            description: 'Tender pengadaan laptop untuk kebutuhan operasional kantor pusat dan cabang.',
-            specification: 'Processor minimal Intel Core i5, RAM 16GB, SSD 1TB, garansi resmi 2 tahun.',
-            start_date: '2026-05-10 08:00:00', end_date: '2026-05-22 17:00:00',
-            aanwijzing_date: '2026-05-12 10:00:00',
-            bidding_start: '2026-05-14 08:00:00', bidding_end: '2026-05-16 23:59:59',
-            status: 'open'
-        },
-        tenderStatus:  { status: 'open' },
-        announcement: {
-            title: 'Perubahan Spesifikasi Tender',
-            content: 'Vendor wajib menyertakan garansi resmi minimal 2 tahun dan dukungan service center di Indonesia.',
-            published_at: '2026-05-12 10:00:00'
-        },
-        createBid:  { bid_amount: 120000000, notes: 'Harga sudah termasuk pengiriman dan instalasi.' },
-        updateBid:  { bid_amount: 118500000, notes: 'Revisi harga setelah penyesuaian spesifikasi.' },
-        winner:     { vendor_id: 1, selection_method: 'lowest_price', notes: 'Dipilih berdasarkan harga penawaran terendah.' },
-        purchaseOrder: {
-            po_number: 'PO-2026-001', issued_date: '2026-05-20',
-            notes: 'Purchase order untuk pengadaan laptop kantor.'
-        },
-        uploadDocument: { document_type: 'izin_usaha', file: 'izin-usaha-baru.pdf' }
-    };
+const DEMO_TOKENS = {
+    vendor: '1|sample_vendor_token_abc123xyz',
+    admin:  '2|sample_admin_token_abc123xyz'
+};
 
-    // ── Daftar Endpoint ───────────────────────────────────────────────────────
-    const ENDPOINT_GROUPS = [
-        { group: 'Auth', items: [
-            { label: 'POST /api/auth/register – Register vendor',     method: 'POST', path: '/api/auth/register',     access: 'public', bodyKey: 'register' },
-            { label: 'POST /api/auth/login – Login user',             method: 'POST', path: '/api/auth/login',        access: 'public', bodyKey: 'loginByRole' },
-            { label: 'POST /api/auth/logout – Logout user',           method: 'POST', path: '/api/auth/logout',       access: 'auth',   bodyKey: null },
-            { label: 'GET /api/auth/me – Get current user',           method: 'GET',  path: '/api/auth/me',           access: 'auth',   bodyKey: null },
-            { label: 'PUT /api/auth/change-password – Change password', method: 'PUT', path: '/api/auth/change-password', access: 'auth', bodyKey: 'changePassword' }
-        ]},
-        { group: 'Vendor Profile', items: [
-            { label: 'GET /api/vendors/me – Get vendor profile',               method: 'GET', path: '/api/vendors/me',     access: 'vendor', bodyKey: null },
-            { label: 'PUT /api/vendors/me – Update vendor profile',            method: 'PUT', path: '/api/vendors/me',     access: 'vendor', bodyKey: 'updateVendor' },
-            { label: 'GET /api/vendors/status – Get vendor verification status', method: 'GET', path: '/api/vendors/status', access: 'vendor', bodyKey: null }
-        ]},
-        { group: 'Vendor Documents', items: [
-            { label: 'GET /api/vendors/documents – List vendor documents',    method: 'GET',  path: '/api/vendors/documents', access: 'vendor', bodyKey: null },
-            { label: 'POST /api/vendors/documents – Upload vendor document',  method: 'POST', path: '/api/vendors/documents', access: 'vendor', bodyKey: 'uploadDocument', upload: true }
-        ]},
-        { group: 'Admin Vendor Verification', items: [
-            { label: 'GET /api/admin/vendors – List vendors',                   method: 'GET',   path: '/api/admin/vendors',          access: 'admin', bodyKey: null },
-            { label: 'GET /api/admin/vendors/1 – Get vendor detail',            method: 'GET',   path: '/api/admin/vendors/1',         access: 'admin', bodyKey: null },
-            { label: 'PATCH /api/admin/vendors/1/status – Approve/reject vendor', method: 'PATCH', path: '/api/admin/vendors/1/status', access: 'admin', bodyKey: 'vendorStatus' }
-        ]},
-        { group: 'Tender Admin', items: [
-            { label: 'GET /api/admin/tenders – List tenders (admin)',         method: 'GET',   path: '/api/admin/tenders',             access: 'admin', bodyKey: null },
-            { label: 'POST /api/admin/tenders – Create tender',               method: 'POST',  path: '/api/admin/tenders',             access: 'admin', bodyKey: 'createTender' },
-            { label: 'GET /api/admin/tenders/101 – Get tender detail (admin)', method: 'GET',  path: '/api/admin/tenders/101',         access: 'admin', bodyKey: null },
-            { label: 'PUT /api/admin/tenders/101 – Update tender',            method: 'PUT',   path: '/api/admin/tenders/101',         access: 'admin', bodyKey: 'updateTender' },
-            { label: 'PATCH /api/admin/tenders/101/status – Update tender status', method: 'PATCH', path: '/api/admin/tenders/101/status', access: 'admin', bodyKey: 'tenderStatus' }
-        ]},
-        { group: 'Tender Vendor', items: [
-            { label: 'GET /api/tenders – List tenders (vendor)',              method: 'GET', path: '/api/tenders',     access: 'vendor', bodyKey: null },
-            { label: 'GET /api/tenders/101 – Get tender detail (vendor)',     method: 'GET', path: '/api/tenders/101', access: 'vendor', bodyKey: null }
-        ]},
-        { group: 'Participation', items: [
-            { label: 'POST /api/tenders/101/participants – Join tender',              method: 'POST', path: '/api/tenders/101/participants',       access: 'vendor', bodyKey: null },
-            { label: 'GET /api/admin/tenders/101/participants – List participants',   method: 'GET',  path: '/api/admin/tenders/101/participants', access: 'admin',  bodyKey: null }
-        ]},
-        { group: 'Aanwijzing', items: [
-            { label: 'POST /api/admin/tenders/101/announcements – Create announcement', method: 'POST', path: '/api/admin/tenders/101/announcements', access: 'admin',  bodyKey: 'announcement' },
-            { label: 'GET /api/tenders/101/announcements – List announcements',          method: 'GET',  path: '/api/tenders/101/announcements',       access: 'vendor', bodyKey: null }
-        ]},
-        { group: 'Bidding', items: [
-            { label: 'POST /api/tenders/101/bids – Submit bid',            method: 'POST', path: '/api/tenders/101/bids',       access: 'vendor', bodyKey: 'createBid' },
-            { label: 'PUT /api/tenders/101/bids/1 – Update bid',           method: 'PUT',  path: '/api/tenders/101/bids/1',     access: 'vendor', bodyKey: 'updateBid' },
-            { label: 'GET /api/tenders/101/bids/me – Get my bid',          method: 'GET',  path: '/api/tenders/101/bids/me',    access: 'vendor', bodyKey: null },
-            { label: 'GET /api/admin/tenders/101/bids – List tender bids', method: 'GET',  path: '/api/admin/tenders/101/bids', access: 'admin',  bodyKey: null }
-        ]},
-        { group: 'Winner Selection', items: [
-            { label: 'POST /api/admin/tenders/101/winner – Select winner', method: 'POST', path: '/api/admin/tenders/101/winner', access: 'admin',  bodyKey: 'winner' },
-            { label: 'GET /api/tenders/101/winner – Get winner',           method: 'GET',  path: '/api/tenders/101/winner',       access: 'vendor', bodyKey: null }
-        ]},
-        { group: 'Result & PO', items: [
-            { label: 'GET /api/tenders/101/result – Get tender result',                   method: 'GET',  path: '/api/tenders/101/result',               access: 'vendor', bodyKey: null },
-            { label: 'POST /api/admin/tenders/101/purchase-order – Generate PO',         method: 'POST', path: '/api/admin/tenders/101/purchase-order',  access: 'admin',  bodyKey: 'purchaseOrder' },
-            { label: 'GET /api/admin/tenders/101/purchase-order – Get purchase order',   method: 'GET',  path: '/api/admin/tenders/101/purchase-order',  access: 'admin',  bodyKey: null }
-        ]},
-        { group: 'Dashboard', items: [
-            { label: 'GET /api/admin/dashboard – Admin dashboard summary', method: 'GET', path: '/api/admin/dashboard', access: 'admin', bodyKey: null }
-        ]}
-    ];
+const BODIES = {
+    register: {
+        name: 'Budi Santoso', email: 'vendor@mail.com',
+        password: 'password123', password_confirmation: 'password123',
+        company_name: 'PT Maju Jaya', phone: '08123456789', address: 'Jakarta'
+    },
+    loginVendor: { email: 'vendor@mail.com', password: 'password123' },
+    loginAdmin:  { email: 'admin@mail.com',  password: 'password123' },
+    changePassword: {
+        current_password: 'password123',
+        new_password: 'passwordBaru123',
+        new_password_confirmation: 'passwordBaru123'
+    },
+    updateVendor: {
+        company_name: 'PT Maju Jaya Sejahtera',
+        phone: '08123456789', address: 'Jl. Sudirman No. 10, Jakarta'
+    },
+    vendorStatus: { status: 'approved', notes: 'Dokumen lengkap dan valid' },
+    createTender: {
+        title: 'Pengadaan Laptop Kantor 2026',
+        description: 'Tender pengadaan laptop.',
+        specification: 'Intel Core i5, RAM 16GB, SSD 512GB.',
+        start_date: '2026-05-10 08:00:00', end_date: '2026-05-20 17:00:00',
+        aanwijzing_date: '2026-05-12 10:00:00',
+        bidding_start: '2026-05-13 08:00:00', bidding_end: '2026-05-15 23:59:59',
+        status: 'draft'
+    },
+    updateTender: {
+        title: 'Pengadaan Laptop Kantor 2026 - Revisi',
+        description: 'Tender pengadaan laptop.',
+        specification: 'Intel Core i5, RAM 16GB, SSD 1TB.',
+        start_date: '2026-05-10 08:00:00', end_date: '2026-05-22 17:00:00',
+        aanwijzing_date: '2026-05-12 10:00:00',
+        bidding_start: '2026-05-14 08:00:00', bidding_end: '2026-05-16 23:59:59',
+        status: 'open'
+    },
+    tenderStatus:  { status: 'open' },
+    announcement:  { title: 'Pengumuman', content: 'Peserta wajib hadir online.' },
+    createBid:     { bid_amount: 120000000, proposal_note: 'Penawaran terbaik garansi 3 tahun.' },
+    updateBid:     { bid_amount: 115000000, proposal_note: 'Revisi penawaran.' },
+    winner:        { bid_id: 1 },
+    purchaseOrder: { amount: 115000000, notes: 'PO untuk pemenang.' }
+};
 
-    // ── State ─────────────────────────────────────────────────────────────────
-    let flatEndpoints = [];
+const GROUPS = [
+    { group: 'Auth', items: [
+        { label: 'Register',                    method: 'POST',  path: '/api/auth/register',       access: 'public', bodyKey: 'register' },
+        { label: 'Login',                       method: 'POST',  path: '/api/auth/login',           access: 'public', bodyKey: 'loginByRole' },
+        { label: 'Logout',                      method: 'POST',  path: '/api/auth/logout',          access: 'any',    bodyKey: null },
+        { label: 'Get Profile (Me)',            method: 'GET',   path: '/api/auth/me',              access: 'any',    bodyKey: null },
+        { label: 'Change Password',             method: 'PUT',   path: '/api/auth/change-password', access: 'any',    bodyKey: 'changePassword' }
+    ]},
+    { group: 'Vendor', items: [
+        { label: 'Get Vendor Profile',          method: 'GET',   path: '/api/vendors/me',           access: 'vendor', bodyKey: null },
+        { label: 'Update Vendor Profile',       method: 'PUT',   path: '/api/vendors/me',           access: 'vendor', bodyKey: 'updateVendor' },
+        { label: 'Check Verification Status',   method: 'GET',   path: '/api/vendors/status',       access: 'vendor', bodyKey: null },
+        { label: 'Get Documents',               method: 'GET',   path: '/api/vendors/documents',    access: 'vendor', bodyKey: null },
+        { label: 'Upload Document',             method: 'POST',  path: '/api/vendors/documents',    access: 'vendor', bodyKey: null, upload: true }
+    ]},
+    { group: 'Admin - Vendors', items: [
+        { label: 'List All Vendors',            method: 'GET',   path: '/api/admin/vendors',           access: 'admin', bodyKey: null },
+        { label: 'Get Vendor Detail',           method: 'GET',   path: '/api/admin/vendors/1',         access: 'admin', bodyKey: null },
+        { label: 'Verify/Update Vendor Status', method: 'PATCH', path: '/api/admin/vendors/1/status',  access: 'admin', bodyKey: 'vendorStatus' }
+    ]},
+    { group: 'Tenders', items: [
+        { label: 'List Tenders (Vendor)',       method: 'GET',   path: '/api/tenders',                        access: 'vendor', bodyKey: null },
+        { label: 'Tender Detail (Vendor)',      method: 'GET',   path: '/api/tenders/101',                    access: 'vendor', bodyKey: null },
+        { label: 'List Tenders (Admin)',        method: 'GET',   path: '/api/admin/tenders',                  access: 'admin', bodyKey: null },
+        { label: 'Create Tender (Admin)',       method: 'POST',  path: '/api/admin/tenders',                  access: 'admin', bodyKey: 'createTender' },
+        { label: 'Tender Detail (Admin)',       method: 'GET',   path: '/api/admin/tenders/101',              access: 'admin', bodyKey: null },
+        { label: 'Update Tender (Admin)',       method: 'PUT',   path: '/api/admin/tenders/101',              access: 'admin', bodyKey: 'updateTender' },
+        { label: 'Update Tender Status',        method: 'PATCH', path: '/api/admin/tenders/101/status',       access: 'admin', bodyKey: 'tenderStatus' }
+    ]},
+    { group: 'Participation & Aanwijzing', items: [
+        { label: 'Participate in Tender',       method: 'POST',  path: '/api/tenders/101/participants',       access: 'vendor', bodyKey: null },
+        { label: 'List Participants (Admin)',   method: 'GET',   path: '/api/admin/tenders/101/participants', access: 'admin',  bodyKey: null },
+        { label: 'Create Announcement',         method: 'POST',  path: '/api/admin/tenders/101/announcements', access: 'admin',  bodyKey: 'announcement' },
+        { label: 'View Announcements',          method: 'GET',   path: '/api/tenders/101/announcements',       access: 'vendor', bodyKey: null }
+    ]},
+    { group: 'Bidding', items: [
+        { label: 'Submit Bid',                  method: 'POST',  path: '/api/tenders/101/bids',               access: 'vendor', bodyKey: 'createBid' },
+        { label: 'Update Bid',                  method: 'PUT',   path: '/api/tenders/101/bids/1',             access: 'vendor', bodyKey: 'updateBid' },
+        { label: 'My Bid Status',               method: 'GET',   path: '/api/tenders/101/bids/me',            access: 'vendor', bodyKey: null },
+        { label: 'List Bids (Admin)',           method: 'GET',   path: '/api/admin/tenders/101/bids',         access: 'admin',  bodyKey: null }
+    ]},
+    { group: 'Winner & PO', items: [
+        { label: 'Select Winner (Admin)',       method: 'POST',  path: '/api/admin/tenders/101/winner',         access: 'admin',  bodyKey: 'winner' },
+        { label: 'View Winner (Vendor)',        method: 'GET',   path: '/api/tenders/101/winner',               access: 'vendor', bodyKey: null },
+        { label: 'Tender Result',               method: 'GET',   path: '/api/tenders/101/result',               access: 'vendor', bodyKey: null },
+        { label: 'Create PO (Admin)',           method: 'POST',  path: '/api/admin/tenders/101/purchase-order', access: 'admin',  bodyKey: 'purchaseOrder' },
+        { label: 'View PO (Admin)',             method: 'GET',   path: '/api/admin/tenders/101/purchase-order', access: 'admin',  bodyKey: null }
+    ]},
+    { group: 'Dashboard', items: [
+        { label: 'Admin Dashboard Summary',     method: 'GET',   path: '/api/admin/dashboard',                access: 'admin',  bodyKey: null }
+    ]}
+];
 
-    // ── Helper: ambil nilai element ───────────────────────────────────────────
-    const el  = id => document.getElementById(id);
-    const val = id => el(id).value.trim();
+// --- Application Logic ---
+let flat = [];
+let reqHistory = [];
+let lastJson = '';
 
-    function getRole()  { return val('roleInput'); }
-    function getToken() { return val('tokenInput'); }
-    function getSelectedEndpoint() { return flatEndpoints[Number(val('endpointInput'))]; }
-    function getLoginBody() { return getRole() === 'admin' ? BODIES.loginAdmin : BODIES.loginVendor; }
-    function getBody(key) {
-        if (!key) return null;
-        return key === 'loginByRole' ? getLoginBody() : (BODIES[key] || null);
-    }
+const el = id => document.getElementById(id);
+const val = id => el(id).value.trim();
+const getRole = () => val('roleInput');
+const getToken = () => val('tokenInput');
+const getEp = () => flat[Number(val('endpointInput'))];
 
-    // ── Inisialisasi dropdown endpoint ────────────────────────────────────────
-    function initEndpoints() {
-        const sel = el('endpointInput');
-        sel.innerHTML = '';
-        flatEndpoints = [];
-
-        ENDPOINT_GROUPS.forEach(({ group, items }) => {
-            const og = document.createElement('optgroup');
-            og.label = group;
-            items.forEach(item => {
-                flatEndpoints.push(item);
-                const opt = document.createElement('option');
-                opt.value = flatEndpoints.length - 1;
-                opt.textContent = item.label;
-                og.appendChild(opt);
-            });
-            sel.appendChild(og);
+function init() {
+    const sel = el('endpointInput');
+    flat = [];
+    GROUPS.forEach(({ group, items }) => {
+        const og = document.createElement('optgroup');
+        og.label = group;
+        items.forEach(item => {
+            flat.push(item);
+            const opt = document.createElement('option');
+            opt.value = flat.length - 1;
+            opt.textContent = `${item.method} ${item.path}`;
+            og.appendChild(opt);
         });
-
-        sel.addEventListener('change', onEndpointChange);
-        onEndpointChange();
-    }
-
-    function onEndpointChange() {
-        const ep = getSelectedEndpoint();
-        if (!ep) return;
-        el('methodInput').value = ep.method;
-        el('accessInput').value = ep.access;
-        resetBody();
-    }
-
-    function resetBody() {
-        const ep   = getSelectedEndpoint();
-        const body = ep ? getBody(ep.bodyKey) : null;
-
-        if (!body) {
-            el('bodyInput').value = '';
-            el('bodyInput').placeholder = 'Endpoint ini tidak menggunakan request body.';
-            el('bodyNote').textContent  = 'Tidak ada request body untuk endpoint ini.';
-            return;
-        }
-
-        el('bodyInput').value = JSON.stringify(body, null, 2);
-        el('bodyNote').textContent = ep.upload
-            ? 'Endpoint ini menggunakan multipart/form-data. File dibuat otomatis untuk pengujian.'
-            : 'Request body dapat diedit sebelum dikirim.';
-    }
-
-    // ── Tampilkan response ────────────────────────────────────────────────────
-    function showResponse(method, path, status, data) {
-        el('currentEndpoint').textContent = method + ' ' + path;
-        el('statusText').textContent      = status;
-        el('responseBox').textContent     = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-        el('responsePanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function showError(ep, message) {
-        showResponse(ep.method, ep.path, 'Blocked', { status: 'error', message });
-    }
-
-    // ── Validasi akses sebelum request ────────────────────────────────────────
-    function validateAccess(ep) {
-        const role  = getRole();
-        const token = getToken();
-
-        if (ep.access === 'public') return true;
-
-        if (!token) {
-            showError(ep, 'Token belum ada. Klik Login terlebih dahulu.');
-            return false;
-        }
-
-        const expectedToken = DEMO_TOKENS[role];
-        if (token !== expectedToken) {
-            showError(ep, 'Token tidak sesuai dengan role "' + role + '". Klik Login untuk mendapatkan token yang benar.');
-            return false;
-        }
-
-        if (ep.access === 'admin' && role !== 'admin') {
-            showError(ep, 'Endpoint ini hanya untuk admin. Ganti role ke admin lalu Login.');
-            return false;
-        }
-
-        if (ep.access === 'vendor' && role !== 'vendor') {
-            showError(ep, 'Endpoint ini hanya untuk vendor. Ganti role ke vendor lalu Login.');
-            return false;
-        }
-
-        return true;
-    }
-
-    // ── Login otomatis ────────────────────────────────────────────────────────
-    async function doLogin() {
-        const role      = getRole();
-        const loginBody = getLoginBody();
-        const token     = DEMO_TOKENS[role];
-        const path      = '/api/auth/login';
-
-        showResponse('POST', path, 'Loading…', { status: 'loading', message: 'Login sedang diproses...' });
-
-        try {
-            const res    = await fetch(window.location.origin + path, {
-                method: 'POST',
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                body: JSON.stringify(loginBody)
-            });
-            let result = res.headers.get('content-type')?.includes('application/json')
-                ? await res.json() : await res.text();
-
-            // Normalkan response supaya token & role sesuai role yang dipilih
-            if (result && result.data) {
-                result.data.access_token = token;
-                result.data.token_type   = 'Bearer';
-                if (result.data.user) {
-                    result.data.user.email = loginBody.email;
-                    result.data.user.role  = role;
-                    result.data.user.id    = role === 'admin' ? 99 : 1;
-                    result.data.user.name  = role === 'admin' ? 'Admin Procurement' : 'Budi Santoso';
-                }
-            }
-
-            // Simpan token ke input & localStorage
-            el('tokenInput').value = token;
-            localStorage.setItem('api_token', token);
-            localStorage.setItem('api_role', role);
-
-            showResponse('POST', path, 'HTTP ' + res.status, {
-                request:     { method: 'POST', url: window.location.origin + path, body: loginBody },
-                saved_token: token,
-                saved_role:  role,
-                response:    result
-            });
-        } catch (err) {
-            showResponse('POST', path, 'Error', { status: 'error', message: 'Login gagal.', error: err.message });
-        }
-    }
-
-    // ── Kirim request endpoint ────────────────────────────────────────────────
-    async function sendRequest() {
-        const ep = getSelectedEndpoint();
-        if (!ep) {
-            showResponse('-', '-', 'Error', { status: 'error', message: 'Endpoint belum dipilih.' });
-            return;
-        }
-
-        showResponse(ep.method, ep.path, 'Loading…', { status: 'loading', message: 'Request sedang diproses...' });
-
-        if (!validateAccess(ep)) return;
-
-        // Upload khusus multipart
-        if (ep.upload) { await sendUpload(ep); return; }
-
-        // Parse body
-        let body = null;
-        if (ep.bodyKey) {
-            const raw = el('bodyInput').value.trim();
-            try { body = raw ? JSON.parse(raw) : null; }
-            catch (e) {
-                showResponse(ep.method, ep.path, 'Invalid JSON', { status: 'error', message: 'Request body JSON tidak valid.', error: e.message });
-                return;
-            }
-        }
-
-        const token = getToken();
-        const role  = getRole();
-        const headers = { 'Accept': 'application/json' };
-        if (token && ep.access !== 'public') headers['Authorization'] = 'Bearer ' + token;
-        if (body)                            headers['Content-Type']   = 'application/json';
-
-        try {
-            const res = await fetch(window.location.origin + ep.path, {
-                method:  ep.method,
-                headers: headers,
-                body:    body ? JSON.stringify(body) : undefined
-            });
-
-            let result = res.headers.get('content-type')?.includes('application/json')
-                ? await res.json() : await res.text();
-
-            // Normalkan response /auth/me supaya role sesuai
-            if (ep.path === '/api/auth/me' && result && result.data) {
-                result.data.id    = role === 'admin' ? 99 : 1;
-                result.data.name  = role === 'admin' ? 'Admin Procurement' : 'Budi Santoso';
-                result.data.email = role === 'admin' ? 'admin@mail.com' : 'vendor@mail.com';
-                result.data.role  = role;
-                if (role === 'admin') delete result.data.vendor_status;
-                else result.data.vendor_status = result.data.vendor_status || 'pending';
-            }
-
-            showResponse(ep.method, ep.path, 'HTTP ' + res.status, {
-                request:  { method: ep.method, url: window.location.origin + ep.path, headers, body },
-                response: result
-            });
-        } catch (err) {
-            showResponse(ep.method, ep.path, 'Error', { status: 'error', message: 'Request gagal.', error: err.message });
-        }
-    }
-
-    // ── Upload multipart ──────────────────────────────────────────────────────
-    async function sendUpload(ep) {
-        const token = getToken();
-        const role  = getRole();
-
-        const form = new FormData();
-        form.append('document_type', 'izin_usaha');
-        form.append('file', new Blob(['Dummy file untuk testing upload dokumen'], { type: 'application/pdf' }), 'izin-usaha-baru.pdf');
-
-        const headers = { 'Accept': 'application/json' };
-        if (token) headers['Authorization'] = 'Bearer ' + token;
-
-        try {
-            const res = await fetch(window.location.origin + ep.path, { method: ep.method, headers, body: form });
-            let result = res.headers.get('content-type')?.includes('application/json')
-                ? await res.json() : await res.text();
-
-            showResponse(ep.method, ep.path, 'HTTP ' + res.status, {
-                request:  { method: ep.method, url: window.location.origin + ep.path, body: { document_type: 'izin_usaha', file: 'izin-usaha-baru.pdf' } },
-                response: result
-            });
-        } catch (err) {
-            showResponse(ep.method, ep.path, 'Error', { status: 'error', message: 'Upload gagal.', error: err.message });
-        }
-    }
-
-    // ── Simpan / reset token ──────────────────────────────────────────────────
-    function saveToken() {
-        const token = getToken();
-        const role  = getRole();
-        if (!token) { alert('Token kosong, isi dulu atau klik Login.'); return; }
-        localStorage.setItem('api_token', token);
-        localStorage.setItem('api_role',  role);
-        alert('Token berhasil disimpan.');
-    }
-
-    function resetAll() {
-        localStorage.removeItem('api_token');
-        localStorage.removeItem('api_role');
-        el('tokenInput').value = '';
-        el('roleInput').value  = 'vendor';
-        clearResponse();
-        alert('Data akses direset.');
-    }
-
-    function clearResponse() {
-        el('currentEndpoint').textContent = 'Belum ada request';
-        el('statusText').textContent      = 'Idle';
-        el('responseBox').textContent     = 'Pilih endpoint lalu klik Send Request.';
-    }
-
-    // ── Boot ──────────────────────────────────────────────────────────────────
-    window.addEventListener('load', function () {
-        initEndpoints();
-
-        // Restore dari localStorage
-        const savedRole  = localStorage.getItem('api_role')  || 'vendor';
-        const savedToken = localStorage.getItem('api_token') || '';
-        el('roleInput').value  = savedRole;
-        el('tokenInput').value = savedToken;
-
-        // Ketika role diganti, update body login jika endpoint login sedang aktif
-        el('roleInput').addEventListener('change', function () {
-            const ep = getSelectedEndpoint();
-            if (ep && ep.bodyKey === 'loginByRole') resetBody();
-        });
+        sel.appendChild(og);
     });
+    
+    sel.addEventListener('change', onEpChange);
+    el('roleInput').addEventListener('change', () => { resetBody(); });
+    
+    // Load saved state
+    el('roleInput').value = localStorage.getItem('api_role') || 'vendor';
+    el('tokenInput').value = localStorage.getItem('api_token') || '';
+    
+    onEpChange();
+    renderHistory();
+}
+
+function onEpChange() {
+    const ep = getEp();
+    if (!ep) return;
+    
+    el('urlMethod').textContent = ep.method;
+    el('urlMethod').className = 'method-badge method-' + ep.method;
+    el('urlPath').textContent = BASE_URL + ep.path;
+    
+    updateHint(ep);
+    resetBody();
+}
+
+function updateHint(ep) {
+    const hint = el('accessHint');
+    const text = el('accessHintText');
+    
+    if (!ep || ep.access === 'public') {
+        hint.style.display = 'none';
+        return;
+    }
+    
+    hint.style.display = 'flex';
+    if (ep.access === 'admin') {
+        hint.className = 'access-hint hint-admin';
+        text.innerHTML = '<strong>Admin Access Only.</strong> Make sure to login as Admin.';
+    } else if (ep.access === 'vendor') {
+        hint.className = 'access-hint hint-vendor';
+        text.innerHTML = '<strong>Vendor Access Only.</strong> Make sure to login as Vendor.';
+    } else {
+        hint.className = 'access-hint hint-public';
+        text.innerHTML = 'Requires authentication token.';
+    }
+}
+
+function resetBody() {
+    const ep = getEp();
+    if (!ep) return;
+    
+    const key = ep.bodyKey === 'loginByRole' ? null : ep.bodyKey;
+    const loginBody = getRole() === 'admin' ? BODIES.loginAdmin : BODIES.loginVendor;
+    const body = ep.bodyKey === 'loginByRole' ? loginBody : (key ? BODIES[key] : null);
+
+    const input = el('bodyInput');
+    const note = el('bodyNote');
+    
+    if (!body) {
+        input.value = '';
+        input.disabled = true;
+        if (ep.upload) {
+            input.placeholder = 'File upload request. Multipart form-data will be sent automatically.';
+            note.textContent = 'A dummy PDF document will be generated and uploaded.';
+        } else {
+            input.placeholder = 'No request body required.';
+            note.textContent = '';
+        }
+    } else {
+        input.disabled = false;
+        input.value = JSON.stringify(body, null, 4);
+        note.textContent = 'You can modify the JSON payload before sending.';
+    }
+}
+
+function updateStatus(state, code, ms) {
+    const badge = el('statusBadge');
+    el('responseTime').textContent = ms ? `${ms} ms` : '';
+    
+    if (state === 'loading') {
+        badge.className = 'status-badge status-idle';
+        badge.textContent = 'Processing...';
+        return;
+    }
+    
+    if (state === 'error_local') {
+        badge.className = 'status-badge status-error';
+        badge.textContent = 'Failed';
+        return;
+    }
+    
+    const intCode = parseInt(code);
+    badge.textContent = `${intCode}`;
+    
+    if (intCode >= 200 && intCode < 300) badge.className = 'status-badge status-success';
+    else if (intCode >= 400 && intCode < 500) badge.className = 'status-badge status-warning';
+    else if (intCode >= 500) badge.className = 'status-badge status-error';
+    else badge.className = 'status-badge status-idle';
+}
+
+function showResponse(data, btnShow = true) {
+    const text = typeof data === 'string' ? data : JSON.stringify(data, null, 4);
+    el('responseBox').textContent = text;
+    lastJson = text;
+    el('btnCopy').style.display = btnShow ? 'block' : 'none';
+}
+
+async function doLogin() {
+    const role = getRole();
+    const loginBody = role === 'admin' ? BODIES.loginAdmin : BODIES.loginVendor;
+    const path = '/api/auth/login';
+
+    updateStatus('loading');
+    showResponse('Sending login request...', false);
+
+    const t0 = Date.now();
+    try {
+        const res = await fetch(BASE_URL + path, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify(loginBody)
+        });
+        const ms = Date.now() - t0;
+        
+        const result = res.headers.get('content-type')?.includes('application/json')
+            ? await res.json() : await res.text();
+
+        updateStatus('done', res.status, ms);
+        
+        const token = (result?.data?.access_token) || DEMO_TOKENS[role];
+        el('tokenInput').value = token;
+        localStorage.setItem('api_token', token);
+        localStorage.setItem('api_role', role);
+
+        addHistory('POST', path, res.status);
+        
+        if (res.status >= 400) {
+            showResponse(result);
+        } else {
+            showResponse({
+                _meta: "Logged in successfully",
+                saved_token: token,
+                role: role,
+                server_response: result
+            });
+        }
+    } catch (err) {
+        updateStatus('error_local');
+        showResponse({ error: 'Connection failed. Is the Laravel server running?', message: err.message }, false);
+    }
+}
+
+async function sendRequest() {
+    const ep = getEp();
+    if (!ep) return;
+
+    updateStatus('loading');
+    showResponse('Sending request...', false);
+
+    if (ep.upload) { await sendUpload(ep); return; }
+
+    let body = null;
+    if (ep.bodyKey && !el('bodyInput').disabled) {
+        try { 
+            body = el('bodyInput').value.trim() ? JSON.parse(el('bodyInput').value) : null; 
+        } catch (e) {
+            updateStatus('done', 422, null);
+            showResponse({ error: 'Invalid JSON format in Request Body', details: e.message });
+            return;
+        }
+    }
+
+    const headers = { 'Accept': 'application/json' };
+    const token = getToken();
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (body) headers['Content-Type'] = 'application/json';
+
+    const t0 = Date.now();
+    try {
+        const res = await fetch(BASE_URL + ep.path, {
+            method: ep.method,
+            headers,
+            body: body ? JSON.stringify(body) : undefined
+        });
+        const ms = Date.now() - t0;
+        
+        const result = res.headers.get('content-type')?.includes('application/json')
+            ? await res.json() : await res.text();
+
+        updateStatus('done', res.status, ms);
+        addHistory(ep.method, ep.path, res.status);
+
+        if (res.status >= 400) {
+            showResponse(result);
+        } else {
+            showResponse({
+                _request: { method: ep.method, path: ep.path, body },
+                response: result
+            });
+        }
+    } catch (err) {
+        updateStatus('error_local');
+        showResponse({ error: 'Request failed. Is the server running?', details: err.message }, false);
+    }
+}
+
+async function sendUpload(ep) {
+    const headers = { 'Accept': 'application/json' };
+    const token = getToken();
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const form = new FormData();
+    form.append('document_type', 'izin_usaha');
+    form.append('file', new Blob(['Dummy PDF content'], { type: 'application/pdf' }), 'dokumen-dummy.pdf');
+
+    const t0 = Date.now();
+    try {
+        const res = await fetch(BASE_URL + ep.path, { method: ep.method, headers, body: form });
+        const ms = Date.now() - t0;
+        
+        const result = res.headers.get('content-type')?.includes('application/json')
+            ? await res.json() : await res.text();
+            
+        updateStatus('done', res.status, ms);
+        addHistory(ep.method, ep.path, res.status);
+        
+        if (res.status >= 400) {
+            showResponse(result);
+        } else {
+            showResponse({
+                _request: { upload: 'dokumen-dummy.pdf' },
+                response: result
+            });
+        }
+    } catch (err) {
+        updateStatus('error_local');
+        showResponse({ error: 'Upload failed', details: err.message }, false);
+    }
+}
+
+function copyResponse() {
+    navigator.clipboard.writeText(lastJson).then(() => {
+        const btn = el('btnCopy');
+        const oldText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.color = 'var(--success)';
+        setTimeout(() => { 
+            btn.textContent = oldText; 
+            btn.style.color = '';
+        }, 2000);
+    });
+}
+
+function addHistory(method, path, code) {
+    reqHistory.unshift({ method, path, code });
+    if (reqHistory.length > 5) reqHistory.pop();
+    renderHistory();
+}
+
+function renderHistory() {
+    const list = el('historyList');
+    if (reqHistory.length === 0) {
+        list.innerHTML = '<div class="empty-state">No requests yet</div>';
+        return;
+    }
+    
+    list.innerHTML = reqHistory.map((h, i) => {
+        let statusColor = 'var(--text-muted)';
+        if (h.code >= 200 && h.code < 300) statusColor = 'var(--success)';
+        else if (h.code >= 400 && h.code < 500) statusColor = 'var(--warning)';
+        else if (h.code >= 500) statusColor = 'var(--danger)';
+        
+        return `
+        <div class="history-item" onclick="replayHistory(${i})">
+            <div class="history-main">
+                <span class="method-badge method-${h.method}" style="font-size: 10px; padding: 2px 6px;">${h.method}</span>
+                <span class="history-path">${h.path}</span>
+            </div>
+            <span class="history-status" style="color: ${statusColor}">${h.code}</span>
+        </div>
+        `;
+    }).join('');
+}
+
+function replayHistory(i) {
+    const h = reqHistory[i];
+    const idx = flat.findIndex(ep => ep.method === h.method && ep.path === h.path);
+    if (idx >= 0) {
+        el('endpointInput').value = idx;
+        onEpChange();
+    }
+}
+
+function resetAll() {
+    localStorage.removeItem('api_token');
+    localStorage.removeItem('api_role');
+    el('tokenInput').value = '';
+    el('roleInput').value = 'vendor';
+    reqHistory = [];
+    renderHistory();
+    updateStatus('idle');
+    showResponse('Select an endpoint and click "Send Request" to view the response here.', false);
+    resetBody();
+}
+
+window.addEventListener('load', init);
 </script>
 </body>
 </html>
