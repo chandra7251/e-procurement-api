@@ -285,8 +285,10 @@
                 </div>
 
                 <div class="info-label">Repository</div>
-                <div class="info-value" <a href="https://github.com/chandra7251/e-procurement-api">
-                    https://github.com/chandra7251/e-procurement-api</a></div>
+                <div class="info-value">
+                    <a href="https://github.com/chandra7251/e-procurement-api">
+                        https://github.com/chandra7251/e-procurement-api</a>
+                </div>
 
                 <div class=" info-label">Response</div>
                 <div class="info-value">application/json</div>
