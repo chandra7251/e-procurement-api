@@ -71,6 +71,15 @@
         font-family: Consolas, monospace;
     }
 
+    .token-row select {
+        background: #020617;
+        color: #e5e7eb;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 10px;
+        font-family: Arial, sans-serif;
+    }
+
     .section-title {
         margin: 32px 0 14px;
         font-size: 20px;
@@ -210,12 +219,19 @@
     <div class="container">
         <div class="token-panel">
             <div>
-                <strong>Bearer Token</strong>
-                <p>Login dulu untuk menyimpan token otomatis, atau isi manual.</p>
+                <strong>Bearer Token & Role</strong>
+                <p>Login dulu untuk menyimpan token otomatis. Untuk mengetes endpoint admin, pilih role admin lalu klik
+                    Save Token.</p>
             </div>
 
             <div class="token-row">
                 <input type="text" id="tokenInput" placeholder="Bearer token akan muncul di sini">
+
+                <select id="roleInput">
+                    <option value="vendor">vendor</option>
+                    <option value="admin">admin</option>
+                </select>
+
                 <button type="button" onclick="saveToken()">Save Token</button>
                 <button type="button" onclick="loginAndSaveToken()">Login & Save Token</button>
                 <button type="button" onclick="clearToken()">Clear Token</button>
@@ -563,11 +579,36 @@
         }
     };
 
+    function getCurrentRole() {
+        return localStorage.getItem("api_role") || "vendor";
+    }
+
+    function blockAdminAccess(method, endpoint) {
+        const responseBox = document.getElementById("responseBox");
+        const statusText = document.getElementById("statusText");
+        const currentEndpoint = document.getElementById("currentEndpoint");
+
+        currentEndpoint.textContent = `${method} ${endpoint}`;
+        statusText.textContent = "Blocked";
+
+        responseBox.textContent = JSON.stringify({
+            status: "error",
+            message: "Forbidden. Admin access only.",
+            note: "Simulasi frontend: pilih role admin lalu klik Save Token untuk mengetes endpoint admin."
+        }, null, 2);
+    }
+
     async function testApi(method, endpoint, body = null) {
         const responseBox = document.getElementById("responseBox");
         const statusText = document.getElementById("statusText");
         const currentEndpoint = document.getElementById("currentEndpoint");
         const token = localStorage.getItem("api_token");
+        const role = getCurrentRole();
+
+        if (endpoint.startsWith("/api/admin") && role !== "admin") {
+            blockAdminAccess(method, endpoint);
+            return;
+        }
 
         currentEndpoint.textContent = `${method} ${endpoint}`;
         statusText.textContent = "Loading...";
@@ -576,7 +617,8 @@
         const options = {
             method: method,
             headers: {
-                "Accept": "application/json"
+                "Accept": "application/json",
+                "X-Demo-Role": role
             }
         };
 
@@ -607,6 +649,7 @@
                 request: {
                     method: method,
                     url: baseUrl + endpoint,
+                    role: role,
                     authorization: token ? `Bearer ${token}` : null,
                     content_type: body && method !== "GET" ? "application/json" : null,
                     body: body
@@ -627,6 +670,7 @@
         const statusText = document.getElementById("statusText");
         const currentEndpoint = document.getElementById("currentEndpoint");
         const token = localStorage.getItem("api_token");
+        const role = getCurrentRole();
 
         currentEndpoint.textContent = "POST /api/vendors/documents";
         statusText.textContent = "Loading...";
@@ -642,7 +686,8 @@
         formData.append("file", dummyFile, "izin-usaha-baru.pdf");
 
         const headers = {
-            "Accept": "application/json"
+            "Accept": "application/json",
+            "X-Demo-Role": role
         };
 
         if (token) {
@@ -672,6 +717,7 @@
                 request: {
                     method: "POST",
                     url: baseUrl + "/api/vendors/documents",
+                    role: role,
                     authorization: token ? `Bearer ${token}` : null,
                     content_type: "multipart/form-data",
                     body: {
@@ -692,6 +738,7 @@
 
     function saveToken() {
         const token = document.getElementById("tokenInput").value.trim();
+        const role = document.getElementById("roleInput").value;
 
         if (!token) {
             alert("Token kosong.");
@@ -699,13 +746,19 @@
         }
 
         localStorage.setItem("api_token", token);
-        alert("Token berhasil disimpan.");
+        localStorage.setItem("api_role", role);
+
+        alert(`Token berhasil disimpan sebagai ${role}.`);
     }
 
     function clearToken() {
         localStorage.removeItem("api_token");
+        localStorage.removeItem("api_role");
+
         document.getElementById("tokenInput").value = "";
-        alert("Token dihapus.");
+        document.getElementById("roleInput").value = "vendor";
+
+        alert("Token dan role dihapus.");
     }
 
     async function loginAndSaveToken() {
@@ -733,7 +786,10 @@
 
             if (result.data && result.data.access_token) {
                 localStorage.setItem("api_token", result.data.access_token);
+                localStorage.setItem("api_role", "vendor");
+
                 document.getElementById("tokenInput").value = result.data.access_token;
+                document.getElementById("roleInput").value = "vendor";
             }
 
             responseBox.textContent = JSON.stringify({
@@ -744,6 +800,7 @@
                     body: bodies.login
                 },
                 saved_token: result.data && result.data.access_token ? result.data.access_token : null,
+                saved_role: "vendor",
                 response: result
             }, null, 2);
         } catch (error) {
@@ -763,10 +820,13 @@
 
     window.addEventListener("load", function() {
         const savedToken = localStorage.getItem("api_token");
+        const savedRole = localStorage.getItem("api_role") || "vendor";
 
         if (savedToken) {
             document.getElementById("tokenInput").value = savedToken;
         }
+
+        document.getElementById("roleInput").value = savedRole;
     });
     </script>
 </body>
