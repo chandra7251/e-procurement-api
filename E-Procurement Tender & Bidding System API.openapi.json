@@ -1,0 +1,4666 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "E-Procurement Tender & Bidding System API",
+    "description": "Dokumentasi API untuk sistem E-Procurement (Tender & Bidding System).\n\nTujuan sistem:\n- Vendor dapat registrasi, upload dokumen, melihat tender, join tender, mengikuti aanwijzing, melakukan bidding, dan melihat hasil tender.\n- Admin dapat memverifikasi vendor, membuat tender, mengatur timeline, memonitor bidding, menentukan pemenang, membuat hasil tender/PO, dan melihat dashboard monitoring.\n\nCatatan implementasi:\n- Server backend diasumsikan Laravel pada port 8080.\n- Header seperti Host, User-Agent, Cookie, Cache-Control biasanya dibuat otomatis oleh Apidog/browser/client. Tidak perlu didefinisikan manual.\n- Untuk endpoint protected, gunakan Bearer Token dari hasil login.\n",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "Vendor Profile"
+    },
+    {
+      "name": "Vendor Documents"
+    },
+    {
+      "name": "Admin Vendor Verification"
+    },
+    {
+      "name": "Tender Admin"
+    },
+    {
+      "name": "Tender Vendor"
+    },
+    {
+      "name": "Participation"
+    },
+    {
+      "name": "Aanwijzing"
+    },
+    {
+      "name": "Bidding"
+    },
+    {
+      "name": "Winner Selection"
+    },
+    {
+      "name": "Result & PO"
+    },
+    {
+      "name": "Dashboard"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "summary": "Register vendor",
+        "deprecated": false,
+        "description": "Digunakan vendor untuk registrasi akun baru.\nAkun vendor yang baru dibuat memiliki status verifikasi awal `pending`.\n",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              },
+              "example": {
+                "name": "Budi Santoso",
+                "email": "vendor@mail.com",
+                "password": "password123",
+                "password_confirmation": "password123",
+                "company_name": "PT Maju Jaya",
+                "phone": "08123456789",
+                "address": "Jakarta"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Register berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Vendor registered successfully",
+                  "data": {
+                    "user_id": 1,
+                    "name": "Budi Santoso",
+                    "email": "vendor@mail.com",
+                    "role": "vendor",
+                    "vendor_status": "pending"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "email": [
+                      "The email has already been taken."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "deprecated": false,
+        "description": "Digunakan vendor atau admin untuk login.\nEndpoint mengembalikan access token yang dipakai pada endpoint protected.\n",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "example": {
+                "email": "vendor@mail.com",
+                "password": "password123"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Login successful",
+                  "data": {
+                    "access_token": "1|sample_vendor_token_abc123xyz",
+                    "token_type": "Bearer",
+                    "user": {
+                      "id": 1,
+                      "name": "Budi Santoso",
+                      "email": "vendor@mail.com",
+                      "role": "vendor"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Kredensial salah",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Invalid email or password"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "email": [
+                      "The email field is required."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "summary": "Logout user",
+        "deprecated": false,
+        "description": "Mengakhiri sesi user yang sedang login dengan menonaktifkan token aktif.",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Logout successful"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Token tidak valid atau tidak ada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "summary": "Get current user",
+        "deprecated": false,
+        "description": "Mengambil data user yang sedang login.",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data user berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Current user fetched successfully",
+                  "data": {
+                    "id": 1,
+                    "name": "Budi Santoso",
+                    "email": "vendor@mail.com",
+                    "role": "vendor",
+                    "vendor_status": "pending"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/change-password": {
+      "put": {
+        "summary": "Change password",
+        "deprecated": false,
+        "description": "Mengganti password user yang sedang login dengan verifikasi password lama.",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              },
+              "example": {
+                "current_password": "password123",
+                "new_password": "passwordBaru123",
+                "new_password_confirmation": "passwordBaru123"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Password berhasil diubah",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Password changed successfully"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Password lama salah atau validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Current password is incorrect"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/vendors/me": {
+      "get": {
+        "summary": "Get vendor profile",
+        "deprecated": false,
+        "description": "Mengambil profil vendor yang sedang login.",
+        "tags": [
+          "Vendor Profile"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profil vendor berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Vendor profile fetched successfully",
+                  "data": {
+                    "id": 12,
+                    "name": "Budi Santoso",
+                    "company_name": "PT Maju Jaya",
+                    "email": "vendor@mail.com",
+                    "phone": "08123456789",
+                    "address": "Jakarta",
+                    "vendor_status": "pending"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update vendor profile",
+        "deprecated": false,
+        "description": "Memperbarui data profil vendor.",
+        "tags": [
+          "Vendor Profile"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorProfileUpdateRequest"
+              },
+              "example": {
+                "company_name": "PT Maju Jaya Sejahtera",
+                "phone": "08123456789",
+                "address": "Jl. Sudirman No. 10, Jakarta"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Profil vendor berhasil diperbarui",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Vendor profile updated successfully",
+                  "data": {
+                    "company_name": "PT Maju Jaya Sejahtera",
+                    "phone": "08123456789",
+                    "address": "Jl. Sudirman No. 10, Jakarta"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "company_name": [
+                      "The company name field is required."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/vendors/status": {
+      "get": {
+        "summary": "Get vendor verification status",
+        "deprecated": false,
+        "description": "Melihat status verifikasi vendor saat ini.",
+        "tags": [
+          "Vendor Profile"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status verifikasi vendor berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Vendor verification status fetched successfully",
+                  "data": {
+                    "verification_status": "pending",
+                    "notes": null
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/vendors/documents": {
+      "get": {
+        "summary": "List vendor documents",
+        "deprecated": false,
+        "description": "Menampilkan daftar dokumen perusahaan yang sudah diupload vendor.",
+        "tags": [
+          "Vendor Documents"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar dokumen vendor berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Vendor documents fetched successfully",
+                  "data": [
+                    {
+                      "id": 1,
+                      "document_type": "legalitas",
+                      "file_name": "legalitas-pt-maju-jaya.pdf",
+                      "file_url": "http://127.0.0.1:8080/storage/vendor-documents/legalitas-pt-maju-jaya.pdf",
+                      "uploaded_at": "2026-05-01 10:00:00"
+                    },
+                    {
+                      "id": 2,
+                      "document_type": "izin_usaha",
+                      "file_name": "izin-usaha-pt-maju-jaya.pdf",
+                      "file_url": "http://127.0.0.1:8080/storage/vendor-documents/izin-usaha-pt-maju-jaya.pdf",
+                      "uploaded_at": "2026-05-01 10:10:00"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Upload vendor document",
+        "deprecated": false,
+        "description": "Upload dokumen perusahaan vendor seperti legalitas, izin usaha, atau dokumen pendukung lainnya.",
+        "tags": [
+          "Vendor Documents"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "document_type": {
+                    "type": "string",
+                    "enum": [
+                      "legalitas",
+                      "izin_usaha",
+                      "dokumen_pendukung"
+                    ],
+                    "examples": [
+                      "izin_usaha"
+                    ],
+                    "example": "izin_usaha"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "example": ""
+                  }
+                },
+                "required": [
+                  "document_type",
+                  "file"
+                ]
+              },
+              "example": {
+                "document_type": "izin_usaha",
+                "file": ""
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Dokumen berhasil diupload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Vendor document uploaded successfully",
+                  "data": {
+                    "id": 3,
+                    "document_type": "izin_usaha",
+                    "file_name": "izin-usaha-baru.pdf",
+                    "file_url": "http://127.0.0.1:8080/storage/vendor-documents/izin-usaha-baru.pdf",
+                    "uploaded_at": "2026-05-01 10:30:00"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "file": [
+                      "The file field is required."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/vendors": {
+      "get": {
+        "summary": "List vendors",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil daftar vendor beserta status verifikasinya. Digunakan admin untuk proses monitoring dan verifikasi vendor.",
+        "tags": [
+          "Admin Vendor Verification"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "status",
+            "required": false,
+            "example": "pending",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "maju",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar vendor berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Vendor list fetched successfully",
+                  "data": [
+                    {
+                      "id": 1,
+                      "company_name": "PT Maju Jaya",
+                      "email": "vendor1@mail.com",
+                      "phone": "08123456789",
+                      "verification_status": "pending"
+                    },
+                    {
+                      "id": 2,
+                      "company_name": "PT Sumber Makmur",
+                      "email": "vendor2@mail.com",
+                      "phone": "08129876543",
+                      "verification_status": "approved"
+                    }
+                  ],
+                  "meta": {
+                    "current_page": 1,
+                    "per_page": 10,
+                    "total": 2
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/vendors/{id}": {
+      "get": {
+        "summary": "Get vendor detail",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil detail vendor yang dipilih admin, termasuk data perusahaan dan dokumen vendor sebagai dasar proses verifikasi.",
+        "tags": [
+          "Admin Vendor Verification"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID vendor",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                12
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail vendor berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Vendor detail fetched successfully",
+                  "data": {
+                    "id": 1,
+                    "name": "Budi Santoso",
+                    "email": "vendor@mail.com",
+                    "role": "vendor",
+                    "company_name": "PT Maju Jaya",
+                    "phone": "08123456789",
+                    "address": "Jakarta",
+                    "verification_status": "pending",
+                    "documents": [
+                      {
+                        "id": 11,
+                        "document_type": "legalitas",
+                        "file_name": "legalitas-pt-maju-jaya.pdf",
+                        "file_url": "http://127.0.0.1:8080/storage/vendor-documents/legalitas-pt-maju-jaya.pdf",
+                        "uploaded_at": "2026-05-01 10:00:00"
+                      },
+                      {
+                        "id": 12,
+                        "document_type": "izin_usaha",
+                        "file_name": "izin-usaha-pt-maju-jaya.pdf",
+                        "file_url": "http://127.0.0.1:8080/storage/vendor-documents/izin-usaha-pt-maju-jaya.pdf",
+                        "uploaded_at": "2026-05-01 10:10:00"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "Vendor tidak ditemukan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Vendor not found"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/vendors/{id}/status": {
+      "patch": {
+        "summary": "Approve or reject vendor",
+        "deprecated": false,
+        "description": "Endpoint untuk memperbarui status verifikasi vendor menjadi pending, approved, atau rejected. Hanya vendor dengan status approved yang dapat mengikuti tender.",
+        "tags": [
+          "Admin Vendor Verification"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID vendor",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                12
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorStatusUpdateRequest"
+              },
+              "example": {
+                "status": "approved",
+                "notes": "Dokumen lengkap dan valid"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Status vendor berhasil diperbarui",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Vendor status updated successfully",
+                  "data": {
+                    "vendor_id": 12,
+                    "status": "approved",
+                    "notes": "Dokumen lengkap dan valid"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "verification_status": [
+                      "The verification status field must be one of: pending, approved, rejected."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/tenders": {
+      "get": {
+        "summary": "List tenders for admin",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil daftar semua tender yang dikelola admin.\n\nAkses:\n- Admin only",
+        "tags": [
+          "Tender Admin"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "status",
+            "required": false,
+            "example": "draft",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "laptop",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar tender berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender list fetched successfully",
+                  "data": [
+                    {
+                      "id": 101,
+                      "title": "Pengadaan Laptop Kantor 2026",
+                      "status": "draft",
+                      "start_date": "2026-05-10 08:00:00",
+                      "end_date": "2026-05-20 17:00:00",
+                      "bidding_start": "2026-05-13 08:00:00",
+                      "bidding_end": "2026-05-15 23:59:59"
+                    },
+                    {
+                      "id": 102,
+                      "title": "Pengadaan Printer Kantor",
+                      "status": "open",
+                      "start_date": "2026-05-11 08:00:00",
+                      "end_date": "2026-05-18 17:00:00",
+                      "bidding_start": "2026-05-14 08:00:00",
+                      "bidding_end": "2026-05-16 23:59:59"
+                    }
+                  ],
+                  "meta": {
+                    "current_page": 1,
+                    "per_page": 10,
+                    "total": 2
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create tender",
+        "deprecated": false,
+        "description": "Endpoint untuk membuat event tender baru beserta spesifikasi, timeline, dan status awal tender.\n\nAkses:\n- Admin only\n\nBusiness Rule:\n- Tender harus memiliki timeline yang valid\n- Status awal yang disarankan adalah draft",
+        "tags": [
+          "Tender Admin"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TenderCreateRequest"
+              },
+              "example": {
+                "title": "Pengadaan Laptop Kantor 2026",
+                "description": "Tender pengadaan laptop untuk kebutuhan operasional kantor pusat.",
+                "specification": "Processor minimal Intel Core i5, RAM 16GB, SSD 512GB, garansi resmi 2 tahun.",
+                "start_date": "2026-05-10 08:00:00",
+                "end_date": "2026-05-20 17:00:00",
+                "aanwijzing_date": "2026-05-12 10:00:00",
+                "bidding_start": "2026-05-13 08:00:00",
+                "bidding_end": "2026-05-15 23:59:59",
+                "status": "draft"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Tender berhasil dibuat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender created successfully",
+                  "data": {
+                    "id": 101,
+                    "title": "Pengadaan Laptop Kantor 2026",
+                    "status": "draft",
+                    "start_date": "2026-05-10 08:00:00",
+                    "end_date": "2026-05-20 17:00:00",
+                    "bidding_start": "2026-05-13 08:00:00",
+                    "bidding_end": "2026-05-15 23:59:59"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "title": [
+                      "The title field is required."
+                    ],
+                    "bidding_end": [
+                      "The bidding end must be a date after bidding start."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/tenders/{id}": {
+      "get": {
+        "summary": "Get tender detail for admin",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil detail satu tender berdasarkan ID.\n\nAkses:\n- Admin only",
+        "tags": [
+          "Tender Admin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail tender berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender detail fetched successfully",
+                  "data": {
+                    "id": 101,
+                    "title": "Pengadaan Laptop Kantor 2026",
+                    "description": "Tender pengadaan laptop untuk kebutuhan operasional kantor pusat.",
+                    "specification": "Processor minimal Intel Core i5, RAM 16GB, SSD 512GB, garansi resmi 2 tahun.",
+                    "start_date": "2026-05-10 08:00:00",
+                    "end_date": "2026-05-20 17:00:00",
+                    "aanwijzing_date": "2026-05-12 10:00:00",
+                    "bidding_start": "2026-05-13 08:00:00",
+                    "bidding_end": "2026-05-15 23:59:59",
+                    "status": "draft"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "Tender tidak ditemukan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Tender not found"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update tender",
+        "deprecated": false,
+        "description": "Endpoint untuk memperbarui data tender, termasuk spesifikasi, timeline, dan status.\n\nAkses:\n- Admin only",
+        "tags": [
+          "Tender Admin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TenderUpdateRequest"
+              },
+              "example": {
+                "title": "Pengadaan Laptop Kantor 2026 - Revisi",
+                "description": "Tender pengadaan laptop untuk kebutuhan operasional kantor pusat dan cabang.",
+                "specification": "Processor minimal Intel Core i5, RAM 16GB, SSD 1TB, garansi resmi 2 tahun.",
+                "start_date": "2026-05-10 08:00:00",
+                "end_date": "2026-05-22 17:00:00",
+                "aanwijzing_date": "2026-05-12 10:00:00",
+                "bidding_start": "2026-05-14 08:00:00",
+                "bidding_end": "2026-05-16 23:59:59",
+                "status": "open"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Tender berhasil diperbarui",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender updated successfully",
+                  "data": {
+                    "id": 101,
+                    "title": "Pengadaan Laptop Kantor 2026 - Revisi",
+                    "status": "open"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Tender not found"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "title": [
+                      "The title field is required."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/tenders/{id}/status": {
+      "patch": {
+        "summary": "Update tender status",
+        "deprecated": false,
+        "description": "Endpoint untuk memperbarui status tender secara khusus.\n\nAkses:\n- Admin only\n\nBusiness Rule:\n- Status tender harus mengikuti alur proses procurement\n- Status valid: draft, open, aanwijzing, bidding, closed, finished",
+        "tags": [
+          "Tender Admin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TenderStatusUpdateRequest"
+              },
+              "example": {
+                "status": "open"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Status tender berhasil diperbarui",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender status updated successfully",
+                  "data": {
+                    "id": 101,
+                    "status": "open"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "status": [
+                      "The status field must be one of: draft, open, aanwijzing, bidding, closed, finished."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tenders": {
+      "get": {
+        "summary": "List tenders for vendor",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil daftar tender yang dapat dilihat vendor.\n\nAkses:\n- Vendor only\n\nBusiness Rule:\n- Vendor harus login untuk melihat daftar tender\n- Status tender ditampilkan agar vendor mengetahui tahap proses tender",
+        "tags": [
+          "Tender Vendor"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "status",
+            "required": false,
+            "example": "open",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "laptop",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar tender vendor berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "1": {
+                    "summary": "Success",
+                    "value": {
+                      "status": "success",
+                      "message": "Tender list fetched successfully",
+                      "data": [
+                        {
+                          "id": 101,
+                          "title": "Pengadaan Laptop Kantor 2026",
+                          "description": "Tender pengadaan laptop untuk kebutuhan operasional kantor pusat.",
+                          "start_date": "2026-05-10 08:00:00",
+                          "end_date": "2026-05-20 17:00:00",
+                          "bidding_start": "2026-05-13 08:00:00",
+                          "bidding_end": "2026-05-15 23:59:59",
+                          "status": "open"
+                        },
+                        {
+                          "id": 102,
+                          "title": "Pengadaan Printer Kantor",
+                          "description": "Tender pengadaan printer untuk cabang Surabaya.",
+                          "start_date": "2026-05-11 08:00:00",
+                          "end_date": "2026-05-18 17:00:00",
+                          "bidding_start": "2026-05-14 08:00:00",
+                          "bidding_end": "2026-05-16 23:59:59",
+                          "status": "aanwijzing"
+                        }
+                      ],
+                      "meta": {
+                        "current_page": 1,
+                        "per_page": 10,
+                        "total": 2
+                      }
+                    }
+                  },
+                  "2": {
+                    "summary": "Example 1",
+                    "value": {
+                      "status": "error",
+                      "message": "Forbidden. Vendor access only."
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tenders/{id}": {
+      "get": {
+        "summary": "Get tender detail for vendor",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil detail tender yang dilihat vendor, termasuk spesifikasi, timeline, dan status tender.\n\nAkses:\n- Vendor only",
+        "tags": [
+          "Tender Vendor"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail tender berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender detail fetched successfully",
+                  "data": {
+                    "id": 101,
+                    "title": "Pengadaan Laptop Kantor 2026",
+                    "description": "Tender pengadaan laptop untuk kebutuhan operasional kantor pusat.",
+                    "specification": "Processor minimal Intel Core i5, RAM 16GB, SSD 512GB, garansi resmi 2 tahun.",
+                    "start_date": "2026-05-10 08:00:00",
+                    "end_date": "2026-05-20 17:00:00",
+                    "aanwijzing_date": "2026-05-12 10:00:00",
+                    "bidding_start": "2026-05-13 08:00:00",
+                    "bidding_end": "2026-05-15 23:59:59",
+                    "status": "open"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Vendor access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "Tender tidak ditemukan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Tender not found"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tenders/{id}/participants": {
+      "post": {
+        "summary": "Join tender",
+        "deprecated": false,
+        "description": "Endpoint untuk mendaftarkan vendor sebagai peserta tender.\n\nAkses:\n- Vendor only\n\nBusiness Rule:\n- Hanya vendor dengan status approved yang dapat mengikuti tender\n- Vendor tidak dapat join tender lebih dari satu kali",
+        "tags": [
+          "Participation"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Berhasil join tender",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Successfully joined tender",
+                  "data": {
+                    "tender_id": 101,
+                    "vendor_id": 1,
+                    "joined_at": "2026-05-10 10:00:00"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Vendor belum approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Vendor not approved"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "Tender tidak ditemukan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Tender not found"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/tenders/{id}/participants": {
+      "get": {
+        "summary": "List tender participants",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil daftar vendor yang telah mendaftar sebagai peserta tender.\n\nAkses:\n- Admin only",
+        "tags": [
+          "Participation"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar peserta tender berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Participants fetched successfully",
+                  "data": [
+                    {
+                      "vendor_id": 1,
+                      "company_name": "PT Maju Jaya",
+                      "joined_at": "2026-05-10 10:00:00"
+                    },
+                    {
+                      "vendor_id": 2,
+                      "company_name": "PT Sumber Makmur",
+                      "joined_at": "2026-05-10 11:00:00"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Tender not found"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/tenders/{id}/announcements": {
+      "post": {
+        "summary": "Create tender announcement",
+        "deprecated": false,
+        "description": "Endpoint untuk menambahkan informasi atau update pada tahap aanwijzing tender.\n\nAkses:\n- Admin only\n\nBusiness Rule:\n- Informasi aanwijzing digunakan untuk memberikan penjelasan tambahan kepada vendor sebelum atau selama proses tender berlangsung",
+        "tags": [
+          "Aanwijzing"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnnouncementCreateRequest"
+              },
+              "example": {
+                "title": "Perubahan Spesifikasi Tender",
+                "content": "Vendor wajib menyertakan garansi resmi minimal 2 tahun dan dukungan service center di Indonesia.",
+                "published_at": "2026-05-12 10:00:00"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Announcement berhasil dibuat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender announcement created successfully",
+                  "data": {
+                    "id": 1,
+                    "tender_id": 101,
+                    "title": "Perubahan Spesifikasi Tender",
+                    "content": "Vendor wajib menyertakan garansi resmi minimal 2 tahun dan dukungan service center di Indonesia.",
+                    "published_at": "2026-05-12 10:00:00"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Tender not found"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "title": [
+                      "The title field is required."
+                    ],
+                    "content": [
+                      "The content field is required."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tenders/{id}/announcements": {
+      "get": {
+        "summary": "List tender announcements",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil informasi aanwijzing atau update tender yang dapat dibaca vendor.\n\nAkses:\n- Vendor only",
+        "tags": [
+          "Aanwijzing"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Announcement berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender announcements fetched successfully",
+                  "data": [
+                    {
+                      "id": 1,
+                      "title": "Perubahan Spesifikasi Tender",
+                      "content": "Vendor wajib menyertakan garansi resmi minimal 2 tahun dan dukungan service center di Indonesia.",
+                      "published_at": "2026-05-12 10:00:00"
+                    },
+                    {
+                      "id": 2,
+                      "title": "Jadwal Aanwijzing",
+                      "content": "Sesi penjelasan tender dilaksanakan pada 12 Mei 2026 pukul 10:00 WIB.",
+                      "published_at": "2026-05-11 09:00:00"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Vendor access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "Tender tidak ditemukan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Tender not found"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tenders/{id}/bids": {
+      "post": {
+        "summary": "Submit bid",
+        "deprecated": false,
+        "description": "Endpoint untuk mengajukan penawaran harga pada tender tertentu.\n\nAkses:\n- Vendor only\n\nBusiness Rule:\n- Hanya vendor dengan status approved yang dapat melakukan bidding\n- Vendor harus sudah join tender\n- Bidding hanya dapat dilakukan dalam rentang waktu bidding_start sampai bidding_end",
+        "tags": [
+          "Bidding"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BidCreateRequest"
+              },
+              "example": {
+                "bid_amount": 120000000,
+                "notes": "Harga sudah termasuk pengiriman dan instalasi."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Bid berhasil disubmit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Bid submitted successfully",
+                  "data": {
+                    "id": 1,
+                    "tender_id": 101,
+                    "vendor_id": 1,
+                    "bid_amount": 120000000,
+                    "notes": "Harga sudah termasuk pengiriman dan instalasi.",
+                    "submitted_at": "2026-05-13 10:00:00"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Melanggar business rules bidding",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "vendor_not_approved": {
+                    "summary": "vendor_not_approved",
+                    "value": {
+                      "status": "error",
+                      "message": "Vendor not approved"
+                    }
+                  },
+                  "not_participant": {
+                    "summary": "not_participant",
+                    "value": {
+                      "status": "error",
+                      "message": "You are not a participant of this tender"
+                    }
+                  },
+                  "bidding_not_started": {
+                    "summary": "bidding_not_started",
+                    "value": {
+                      "status": "error",
+                      "message": "Bidding has not started"
+                    }
+                  },
+                  "bidding_closed": {
+                    "summary": "bidding_closed",
+                    "value": {
+                      "status": "error",
+                      "message": "Bidding is closed"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "7": {
+                    "summary": "Success",
+                    "value": {
+                      "status": "error",
+                      "message": "Validation error",
+                      "errors": {
+                        "bid_amount": [
+                          "Bid must be greater than 0."
+                        ]
+                      }
+                    }
+                  },
+                  "8": {
+                    "summary": "Unprocessable Entity",
+                    "value": {
+                      "status": "error",
+                      "message": "Validation error",
+                      "errors": {
+                        "bid_amount": [
+                          "The bid amount field is required."
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tenders/{id}/bids/{bidId}": {
+      "put": {
+        "summary": "Update bid",
+        "deprecated": false,
+        "description": "Endpoint untuk memperbarui penawaran vendor selama periode bidding masih aktif.\n\nAkses:\n- Vendor only\n\nBusiness Rule:\n- Vendor hanya dapat memperbarui bid miliknya sendiri\n- Perubahan bid hanya dapat dilakukan selama waktu bidding masih berjalan",
+        "tags": [
+          "Bidding"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "bidId",
+            "in": "path",
+            "description": "ID bid",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                88
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BidCreateRequest"
+              },
+              "example": {
+                "bid_amount": 118500000,
+                "notes": "Revisi harga setelah penyesuaian spesifikasi."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Bid berhasil diperbarui",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Bid updated successfully",
+                  "data": {
+                    "id": 1,
+                    "tender_id": 101,
+                    "vendor_id": 1,
+                    "bid_amount": 118500000,
+                    "notes": "Revisi harga setelah penyesuaian spesifikasi.",
+                    "updated_at": "2026-05-13 12:00:00"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bidding sudah ditutup atau bukan pemilik bid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "3": {
+                    "summary": "Success",
+                    "value": {
+                      "status": "error",
+                      "message": "Bidding is closed"
+                    }
+                  },
+                  "4": {
+                    "summary": "Example 2",
+                    "value": {
+                      "status": "error",
+                      "message": "Forbidden. Vendor access only."
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "Bid tidak ditemukan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Bid not found"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "bid_amount": [
+                      "Bid must be greater than 0."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tenders/{id}/bids/me": {
+      "get": {
+        "summary": "Get my bid",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil data bid milik vendor yang sedang login pada tender tertentu.\n\nAkses:\n- Vendor only\n\nBusiness Rule:\n- Vendor hanya dapat melihat bid miliknya sendiri",
+        "tags": [
+          "Bidding"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bid vendor berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Your bid fetched successfully",
+                  "data": {
+                    "id": 1,
+                    "tender_id": 101,
+                    "vendor_id": 1,
+                    "bid_amount": 118500000,
+                    "notes": "Revisi harga setelah penyesuaian spesifikasi.",
+                    "submitted_at": "2026-05-13 10:00:00",
+                    "updated_at": "2026-05-13 12:00:00"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "Bid belum ada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Bid not found"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/tenders/{id}/bids": {
+      "get": {
+        "summary": "List tender bids",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil seluruh data penawaran vendor pada tender tertentu.\n\nAkses:\n- Admin only\n\nBusiness Rule:\n- Data ini digunakan admin untuk monitoring bidding dan proses penentuan pemenang",
+        "tags": [
+          "Bidding"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar bid berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "1": {
+                    "summary": "Success",
+                    "value": {
+                      "status": "success",
+                      "message": "Bid list fetched successfully",
+                      "data": [
+                        {
+                          "id": 1,
+                          "vendor_id": 1,
+                          "company_name": "PT Maju Jaya",
+                          "bid_amount": 118500000,
+                          "submitted_at": "2026-05-13 10:00:00",
+                          "updated_at": "2026-05-13 12:00:00"
+                        },
+                        {
+                          "id": 2,
+                          "vendor_id": 2,
+                          "company_name": "PT Sumber Makmur",
+                          "bid_amount": 119000000,
+                          "submitted_at": "2026-05-13 11:15:00",
+                          "updated_at": null
+                        }
+                      ]
+                    }
+                  },
+                  "2": {
+                    "summary": "Example 1",
+                    "value": {
+                      "status": "error",
+                      "message": "Tender not found"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/tenders/{id}/winner": {
+      "post": {
+        "summary": "Select winner",
+        "deprecated": false,
+        "description": "Endpoint untuk menentukan pemenang tender berdasarkan data bidding yang telah masuk.\n\nAkses:\n- Admin only\n\nBusiness Rule:\n- Pemenang harus berasal dari vendor yang menjadi peserta tender dan memiliki bid yang valid\n- Pemenang seharusnya dipilih setelah proses bidding selesai\n- Metode pemilihan dapat berupa lowest_price atau admin_consideration",
+        "tags": [
+          "Winner Selection"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WinnerSelectRequest"
+              },
+              "example": {
+                "vendor_id": 1,
+                "selection_method": "lowest_price",
+                "notes": "Dipilih berdasarkan harga penawaran terendah."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Pemenang berhasil dipilih",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender winner selected successfully",
+                  "data": {
+                    "tender_id": 101,
+                    "vendor_id": 1,
+                    "company_name": "PT Maju Jaya",
+                    "winning_bid_amount": 118500000,
+                    "selection_method": "lowest_price",
+                    "notes": "Dipilih berdasarkan harga penawaran terendah."
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "5": {
+                    "summary": "Example 1",
+                    "value": {
+                      "status": "error",
+                      "message": "Tender not found"
+                    }
+                  },
+                  "6": {
+                    "summary": "Example 2",
+                    "value": {
+                      "status": "error",
+                      "message": "Selected vendor does not have a valid bid for this tender"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Winner has already been selected for this tender"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Validation error",
+                  "errors": {
+                    "vendor_id": [
+                      "The vendor id field is required."
+                    ],
+                    "selection_method": [
+                      "The selection method field must be one of: lowest_price, admin_consideration."
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tenders/{id}/winner": {
+      "get": {
+        "summary": "Get winner",
+        "deprecated": false,
+        "description": "Endpoint untuk mengambil informasi pemenang tender yang telah ditentukan.\n\nAkses:\n- Vendor only\n\nBusiness Rule:\n- Data pemenang hanya tersedia setelah admin menyelesaikan proses winner selection",
+        "tags": [
+          "Winner Selection"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data pemenang berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender winner fetched successfully",
+                  "data": {
+                    "tender_id": 101,
+                    "winner": {
+                      "vendor_id": 1,
+                      "company_name": "PT Maju Jaya"
+                    },
+                    "winning_bid_amount": 118500000,
+                    "selection_method": "lowest_price",
+                    "notes": "Dipilih berdasarkan harga penawaran terendah."
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Vendor access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "Pemenang belum ditentukan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "3": {
+                    "summary": "Success",
+                    "value": {
+                      "status": "error",
+                      "message": "Winner has not been selected for this tender"
+                    }
+                  },
+                  "4": {
+                    "summary": "Example 2",
+                    "value": {
+                      "status": "error",
+                      "message": "Tender not found"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/tenders/{id}/result": {
+      "get": {
+        "summary": "Get tender result",
+        "deprecated": false,
+        "description": "Menampilkan hasil tender termasuk pemenang dan status menang/kalah vendor.",
+        "tags": [
+          "Result & PO"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hasil tender berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Tender result fetched successfully",
+                  "data": {
+                    "tender_id": 101,
+                    "tender_title": "Pengadaan Laptop Kantor 2026",
+                    "winner": {
+                      "vendor_id": 1,
+                      "company_name": "PT Maju Jaya"
+                    },
+                    "winning_bid_amount": 118500000,
+                    "your_bid": {
+                      "bid_amount": 120000000,
+                      "status": "lost"
+                    },
+                    "final_status": "finished"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Hasil tender belum tersedia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "3": {
+                    "summary": "Success",
+                    "value": {
+                      "status": "error",
+                      "message": "Tender result not found"
+                    }
+                  },
+                  "4": {
+                    "summary": "Example 2",
+                    "value": {
+                      "status": "error",
+                      "message": "Tender result is not available yet"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/tenders/{id}/purchase-order": {
+      "post": {
+        "summary": "Generate purchase order",
+        "deprecated": false,
+        "description": "Endpoint untuk menghasilkan dokumen purchase order berdasarkan hasil tender.\n\nAkses:\n- Admin only\n\nBusiness Rule:\n- PO hanya dapat dibuat setelah pemenang tender ditentukan",
+        "tags": [
+          "Result & PO"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseOrderCreateRequest"
+              },
+              "example": {
+                "po_number": "PO-2026-001",
+                "issued_date": "2026-05-20",
+                "notes": "Purchase order untuk pengadaan laptop kantor."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Purchase order berhasil dibuat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Purchase order generated successfully",
+                  "data": {
+                    "po_id": 1,
+                    "tender_id": 101,
+                    "po_number": "PO-2026-001",
+                    "vendor": {
+                      "vendor_id": 1,
+                      "company_name": "PT Maju Jaya"
+                    },
+                    "amount": 118500000,
+                    "issued_date": "2026-05-20"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Cannot generate PO before winner is selected"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "Get purchase order",
+        "deprecated": false,
+        "description": "Endpoint untuk melihat detail purchase order yang dihasilkan dari hasil tender.\n\nAkses:\n- Admin only",
+        "tags": [
+          "Result & PO"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID tender",
+            "required": true,
+            "example": 101,
+            "schema": {
+              "type": "integer",
+              "examples": [
+                1001
+              ]
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Purchase order berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Purchase order fetched successfully",
+                  "data": {
+                    "po_id": 1,
+                    "po_number": "PO-2026-001",
+                    "tender_id": 101,
+                    "vendor": {
+                      "vendor_id": 1,
+                      "company_name": "PT Maju Jaya"
+                    },
+                    "amount": 118500000,
+                    "issued_date": "2026-05-20",
+                    "notes": "Purchase order untuk pengadaan laptop kantor."
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden. Admin access only."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "PO belum tersedia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Purchase order not found"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/dashboard": {
+      "get": {
+        "summary": "Admin dashboard summary",
+        "deprecated": false,
+        "description": "Menampilkan ringkasan statistik dashboard admin procurement.",
+        "tags": [
+          "Dashboard"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dashboard summary berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Dashboard data fetched successfully",
+                  "data": {
+                    "total_vendors": 20,
+                    "approved_vendors": 15,
+                    "pending_vendors": 5,
+                    "total_tenders": 10,
+                    "active_tenders": 3,
+                    "finished_tenders": 7,
+                    "total_participants": 30,
+                    "total_bids": 75,
+                    "lowest_bid": 115000000,
+                    "highest_bid": 130000000
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Tidak terautentikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Unauthenticated"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Bukan admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Forbidden access"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "webhooks": {},
+  "components": {
+    "schemas": {
+      "Meta": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "examples": [
+              1
+            ]
+          },
+          "per_page": {
+            "type": "integer",
+            "examples": [
+              10
+            ]
+          },
+          "total": {
+            "type": "integer",
+            "examples": [
+              25
+            ]
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "examples": [
+              "success"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "examples": [
+              "Request successful"
+            ]
+          },
+          "data": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {}
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "examples": [
+              "error"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "examples": [
+              "Validation error"
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "properties": {}
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password",
+          "password_confirmation",
+          "company_name",
+          "phone",
+          "address"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "examples": [
+              "Budi Santoso"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "examples": [
+              "vendor@mail.com"
+            ]
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "examples": [
+              "password123"
+            ]
+          },
+          "password_confirmation": {
+            "type": "string",
+            "format": "password",
+            "examples": [
+              "password123"
+            ]
+          },
+          "company_name": {
+            "type": "string",
+            "examples": [
+              "PT Maju Jaya"
+            ]
+          },
+          "phone": {
+            "type": "string",
+            "examples": [
+              "08123456789"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "examples": [
+              "Jakarta"
+            ]
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "examples": [
+              "vendor@mail.com"
+            ]
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "examples": [
+              "password123"
+            ]
+          }
+        }
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "required": [
+          "current_password",
+          "new_password",
+          "new_password_confirmation"
+        ],
+        "properties": {
+          "current_password": {
+            "type": "string",
+            "format": "password",
+            "examples": [
+              "password123"
+            ]
+          },
+          "new_password": {
+            "type": "string",
+            "format": "password",
+            "examples": [
+              "passwordBaru123"
+            ]
+          },
+          "new_password_confirmation": {
+            "type": "string",
+            "format": "password",
+            "examples": [
+              "passwordBaru123"
+            ]
+          }
+        }
+      },
+      "VendorProfileUpdateRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "company_name",
+          "phone",
+          "address"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "examples": [
+              "Budi Santoso"
+            ]
+          },
+          "company_name": {
+            "type": "string",
+            "examples": [
+              "PT Maju Jaya Abadi"
+            ]
+          },
+          "phone": {
+            "type": "string",
+            "examples": [
+              "08123456789"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "examples": [
+              "Jl. Sudirman No. 10, Jakarta"
+            ]
+          }
+        }
+      },
+      "VendorStatusUpdateRequest": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ],
+            "examples": [
+              "approved"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "examples": [
+              "Dokumen lengkap dan valid"
+            ]
+          }
+        }
+      },
+      "TenderCreateRequest": {
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "specification",
+          "start_date",
+          "end_date",
+          "aanwijzing_date",
+          "bidding_start",
+          "bidding_end",
+          "status"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "examples": [
+              "Pengadaan Laptop 2026"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "examples": [
+              "Tender pengadaan laptop untuk kebutuhan kantor pusat."
+            ]
+          },
+          "specification": {
+            "type": "string",
+            "examples": [
+              "Core i5, RAM 16GB, SSD 512GB, layar 14 inci."
+            ]
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-05-10T08:00:00+07:00"
+            ]
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-05-20T17:00:00+07:00"
+            ]
+          },
+          "aanwijzing_date": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-05-12T10:00:00+07:00"
+            ]
+          },
+          "bidding_start": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-05-13T08:00:00+07:00"
+            ]
+          },
+          "bidding_end": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-05-15T23:59:59+07:00"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "open",
+              "aanwijzing",
+              "bidding",
+              "closed",
+              "finished"
+            ],
+            "examples": [
+              "draft"
+            ]
+          }
+        }
+      },
+      "TenderUpdateRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TenderCreateRequest"
+          }
+        ]
+      },
+      "TenderStatusUpdateRequest": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "open",
+              "aanwijzing",
+              "bidding",
+              "closed",
+              "finished"
+            ],
+            "examples": [
+              "open"
+            ]
+          }
+        }
+      },
+      "AnnouncementCreateRequest": {
+        "type": "object",
+        "required": [
+          "title",
+          "content"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "examples": [
+              "Perubahan spesifikasi SSD"
+            ]
+          },
+          "content": {
+            "type": "string",
+            "examples": [
+              "Spesifikasi SSD diperbarui menjadi minimal 1TB."
+            ]
+          }
+        }
+      },
+      "BidCreateRequest": {
+        "type": "object",
+        "required": [
+          "bid_amount"
+        ],
+        "properties": {
+          "bid_amount": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0,
+            "examples": [
+              125000000
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "examples": [
+              "Harga sudah termasuk pengiriman dan instalasi."
+            ]
+          }
+        }
+      },
+      "WinnerSelectRequest": {
+        "type": "object",
+        "required": [
+          "vendor_id",
+          "reason"
+        ],
+        "properties": {
+          "vendor_id": {
+            "type": "integer",
+            "examples": [
+              12
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "examples": [
+              "Dipilih berdasarkan harga terendah."
+            ]
+          }
+        }
+      },
+      "PurchaseOrderCreateRequest": {
+        "type": "object",
+        "required": [
+          "po_number",
+          "issued_date",
+          "notes"
+        ],
+        "properties": {
+          "po_number": {
+            "type": "string",
+            "examples": [
+              "PO-2026-001"
+            ]
+          },
+          "issued_date": {
+            "type": "string",
+            "format": "date",
+            "examples": [
+              "2026-05-18"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "examples": [
+              "PO sederhana hasil tender untuk vendor pemenang."
+            ]
+          }
+        }
+      }
+    },
+    "responses": {},
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Token",
+        "description": "Masukkan access token hasil login. Apidog akan mengirim header Authorization: Bearer {token}"
+      }
+    },
+    "parameters": {
+      "TenderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID tender",
+        "schema": {
+          "type": "integer",
+          "example": 1001
+        }
+      },
+      "VendorId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID vendor",
+        "schema": {
+          "type": "integer",
+          "example": 12
+        }
+      },
+      "BidId": {
+        "name": "bidId",
+        "in": "path",
+        "required": true,
+        "description": "ID bid",
+        "schema": {
+          "type": "integer",
+          "example": 88
+        }
+      }
+    }
+  },
+  "servers": [],
+  "security": []
+}
