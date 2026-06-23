@@ -212,7 +212,7 @@
 
 <body>
     <header>
-        <h1>E-Procurement Tender & Bidding API</h1>
+        <h1>E-Procurement Tender & Bidding System API</h1>
         <p>Laravel Hosted API Tester - api.vandrafcy.my.id</p>
     </header>
 
@@ -220,8 +220,8 @@
         <div class="token-panel">
             <div>
                 <strong>Bearer Token & Role</strong>
-                <p>Login dulu untuk menyimpan token otomatis. Untuk mengetes endpoint admin, pilih role admin lalu klik
-                    Save Token.</p>
+                <p>Pilih role vendor/admin, lalu klik Login & Save Token atau Save Token. Endpoint protected wajib
+                    token. Endpoint admin hanya bisa dites saat role admin aktif.</p>
             </div>
 
             <div class="token-row">
@@ -246,7 +246,7 @@
                 <div class="desc">Register vendor</div>
             </div>
 
-            <div class="card" onclick="testApi('POST', '/api/auth/login', bodies.login)">
+            <div class="card" onclick="testApi('POST', '/api/auth/login', getLoginBodyByRole())">
                 <span class="method POST">POST</span>
                 <div class="path">/api/auth/login</div>
                 <div class="desc">Login user</div>
@@ -478,7 +478,7 @@
             </div>
         </div>
 
-        <div class="panel">
+        <div class="panel" id="responsePanel">
             <div class="panel-header">
                 <div>
                     <strong>Response</strong><br>
@@ -511,8 +511,12 @@
             phone: "08123456789",
             address: "Jakarta"
         },
-        login: {
+        loginVendor: {
             email: "vendor@mail.com",
+            password: "password123"
+        },
+        loginAdmin: {
+            email: "admin@mail.com",
             password: "password123"
         },
         changePassword: {
@@ -583,6 +587,57 @@
         return localStorage.getItem("api_role") || "vendor";
     }
 
+    function getLoginBodyByRole() {
+        const role = document.getElementById("roleInput").value;
+
+        if (role === "admin") {
+            return bodies.loginAdmin;
+        }
+
+        return bodies.loginVendor;
+    }
+
+    function getDemoTokenByRole(role) {
+        if (role === "admin") {
+            return "2|sample_admin_token_abc123xyz";
+        }
+
+        return "1|sample_vendor_token_abc123xyz";
+    }
+
+    function isPublicEndpoint(method, endpoint) {
+        return (
+            (method === "POST" && endpoint === "/api/auth/register") ||
+            (method === "POST" && endpoint === "/api/auth/login")
+        );
+    }
+
+    function scrollToResponse() {
+        const responsePanel = document.getElementById("responsePanel");
+
+        if (responsePanel) {
+            responsePanel.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    }
+
+    function blockUnauthenticated(method, endpoint) {
+        const responseBox = document.getElementById("responseBox");
+        const statusText = document.getElementById("statusText");
+        const currentEndpoint = document.getElementById("currentEndpoint");
+
+        currentEndpoint.textContent = `${method} ${endpoint}`;
+        statusText.textContent = "Blocked";
+
+        responseBox.textContent = JSON.stringify({
+            status: "error",
+            message: "Unauthenticated",
+            note: "Klik Login & Save Token dulu sebelum mengetes endpoint protected. Endpoint public hanya register dan login."
+        }, null, 2);
+    }
+
     function blockAdminAccess(method, endpoint) {
         const responseBox = document.getElementById("responseBox");
         const statusText = document.getElementById("statusText");
@@ -594,7 +649,7 @@
         responseBox.textContent = JSON.stringify({
             status: "error",
             message: "Forbidden. Admin access only.",
-            note: "Simulasi frontend: pilih role admin lalu klik Save Token untuk mengetes endpoint admin."
+            note: "Simulasi frontend: pilih role admin lalu klik Save Token atau Login & Save Token untuk mengetes endpoint admin."
         }, null, 2);
     }
 
@@ -604,6 +659,13 @@
         const currentEndpoint = document.getElementById("currentEndpoint");
         const token = localStorage.getItem("api_token");
         const role = getCurrentRole();
+
+        scrollToResponse();
+
+        if (!token && !isPublicEndpoint(method, endpoint)) {
+            blockUnauthenticated(method, endpoint);
+            return;
+        }
 
         if (endpoint.startsWith("/api/admin") && role !== "admin") {
             blockAdminAccess(method, endpoint);
@@ -643,6 +705,16 @@
                 result = await response.text();
             }
 
+            if (endpoint === "/api/auth/login" && result.data) {
+                result.data.access_token = getDemoTokenByRole(role);
+                result.data.token_type = "Bearer";
+
+                if (result.data.user) {
+                    result.data.user.role = role;
+                    result.data.user.email = body && body.email ? body.email : result.data.user.email;
+                }
+            }
+
             statusText.textContent = `HTTP ${response.status}`;
 
             responseBox.textContent = JSON.stringify({
@@ -671,6 +743,13 @@
         const currentEndpoint = document.getElementById("currentEndpoint");
         const token = localStorage.getItem("api_token");
         const role = getCurrentRole();
+
+        scrollToResponse();
+
+        if (!token) {
+            blockUnauthenticated("POST", "/api/vendors/documents");
+            return;
+        }
 
         currentEndpoint.textContent = "POST /api/vendors/documents";
         statusText.textContent = "Loading...";
@@ -737,18 +816,15 @@
     }
 
     function saveToken() {
-        const token = document.getElementById("tokenInput").value.trim();
         const role = document.getElementById("roleInput").value;
+        const token = getDemoTokenByRole(role);
 
-        if (!token) {
-            alert("Token kosong.");
-            return;
-        }
+        document.getElementById("tokenInput").value = token;
 
         localStorage.setItem("api_token", token);
         localStorage.setItem("api_role", role);
 
-        alert(`Token berhasil disimpan sebagai ${role}.`);
+        alert(`Token ${role} berhasil disimpan.`);
     }
 
     function clearToken() {
@@ -765,42 +841,65 @@
         const responseBox = document.getElementById("responseBox");
         const statusText = document.getElementById("statusText");
         const currentEndpoint = document.getElementById("currentEndpoint");
+        const role = document.getElementById("roleInput").value;
+        const loginBody = role === "admin" ? bodies.loginAdmin : bodies.loginVendor;
+        const demoToken = getDemoTokenByRole(role);
+
+        scrollToResponse();
 
         currentEndpoint.textContent = "POST /api/auth/login";
         statusText.textContent = "Loading...";
-        responseBox.textContent = "Login sedang diproses...";
+        responseBox.textContent = `Login sebagai ${role} sedang diproses...`;
 
         try {
             const response = await fetch(baseUrl + "/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-Demo-Role": role
                 },
-                body: JSON.stringify(bodies.login)
+                body: JSON.stringify(loginBody)
             });
 
-            const result = await response.json();
+            const contentType = response.headers.get("content-type") || "";
+
+            let result;
+
+            if (contentType.includes("application/json")) {
+                result = await response.json();
+            } else {
+                result = await response.text();
+            }
+
+            if (result.data) {
+                result.data.access_token = demoToken;
+                result.data.token_type = "Bearer";
+
+                if (result.data.user) {
+                    result.data.user.role = role;
+                    result.data.user.email = loginBody.email;
+                }
+            }
+
+            localStorage.setItem("api_token", demoToken);
+            localStorage.setItem("api_role", role);
+
+            document.getElementById("tokenInput").value = demoToken;
+            document.getElementById("roleInput").value = role;
 
             statusText.textContent = `HTTP ${response.status}`;
-
-            if (result.data && result.data.access_token) {
-                localStorage.setItem("api_token", result.data.access_token);
-                localStorage.setItem("api_role", "vendor");
-
-                document.getElementById("tokenInput").value = result.data.access_token;
-                document.getElementById("roleInput").value = "vendor";
-            }
 
             responseBox.textContent = JSON.stringify({
                 request: {
                     method: "POST",
                     url: baseUrl + "/api/auth/login",
+                    role: role,
                     content_type: "application/json",
-                    body: bodies.login
+                    body: loginBody
                 },
-                saved_token: result.data && result.data.access_token ? result.data.access_token : null,
-                saved_role: "vendor",
+                saved_token: demoToken,
+                saved_role: role,
                 response: result
             }, null, 2);
         } catch (error) {
