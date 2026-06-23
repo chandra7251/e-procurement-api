@@ -268,7 +268,6 @@
     <header>
         <div class="header-wrap">
             <h1>E-Procurement Tender & Bidding System API</h1>
-            <p class="subtitle">API tester sederhana untuk kebutuhan pengujian endpoint Laravel.</p>
         </div>
     </header>
 
@@ -281,18 +280,21 @@
                 <div class="info-value">https://api.vandrafcy.my.id</div>
 
                 <div class="info-label">Dokumentasi</div>
-                <div class="info-value">https://llmwulg77h.apidog.io/</div>
+                <div class="info-value">
+                    <a href="https://llmwulg77h.apidog.io/">https://llmwulg77h.apidog.io/</a>
+                </div>
 
                 <div class="info-label">Repository</div>
-                <div class="info-value">https://github.com/chandra7251/e-procurement-api</div>
+                <div class="info-value" link ahref="https://github.com/chandra7251/e-procurement-api">
+                    https://github.com/chandra7251/e-procurement-api</div>
 
-                <div class="info-label">Response</div>
+                <div class=" info-label">Response</div>
                 <div class="info-value">application/json</div>
             </div>
         </section>
 
         <section class="card">
-            <h2 class="card-title">Ringkasan Modul</h2>
+            <h2 class="card-title">Ringkasan Modul API</h2>
 
             <div class="summary-grid">
                 <div class="summary-item">
@@ -390,7 +392,6 @@
                     <strong>Response</strong><br>
                     <code id="currentEndpoint">Belum ada request</code>
                 </div>
-                <div class="status" id="statusText">Idle</div>
             </div>
 
             <pre id="responseBox">Pilih endpoint lalu klik Send Request.</pre>
@@ -906,7 +907,7 @@
 
         if (endpoint.contentType === "multipart/form-data") {
             bodyNote.textContent =
-            "Endpoint ini menggunakan multipart/form-data. File dibuat otomatis untuk pengujian.";
+                "Endpoint ini menggunakan multipart/form-data. File dibuat otomatis untuk pengujian.";
         } else {
             bodyNote.textContent = "Request body dapat diedit sebelum request dikirim.";
         }
